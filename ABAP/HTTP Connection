@@ -1,0 +1,14 @@
+***** 참고링크: https://github.com/SAP-samples/abap-exercises-codejam/blob/main/exercises/ex3/README.md
+****** HTTP Connection   
+DATA: lv_url TYPE string VALUE 'https://sandbox.api.sap.com/'.
+        lo_http_client = cl_web_http_client_manager=>create_by_http_destination(
+                        i_destination = cl_http_destination_provider=>create_by_url( lv_url ) ).
+
+        lo_http_client->get_http_request( )->set_header_fields( VALUE #(
+             (  name = 'APIKey' value = '<insert API key here>') ) ).
+data(lo_reqeust) = o_http_client->get_http_request( ).
+*** 인증 정보 세팅
+        lo_reqeust->set_authorization_basic(  i_username = 'Communication UserName'
+        i_password = 'Password'  ).
+  lo_reqeust->set_header_field( i_name = 'CONTENT-TYPE' i_value = 'APPLICATION/JSON' ).
+  lo_reqeust->set_text( lv_json_post ).
