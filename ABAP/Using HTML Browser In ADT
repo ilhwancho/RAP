@@ -1,0 +1,54 @@
+CLASS cl_demo_adbc_query DEFINITION
+  PUBLIC
+  INHERITING FROM cl_demo_classrun
+  CREATE PUBLIC .
+
+  PUBLIC SECTION.
+    METHODS main REDEFINITION.
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+
+    DATA:
+      BEGIN OF result_line,
+        carrid TYPE sflight-carrid,
+        connid TYPE sflight-connid,
+        fldate TYPE sflight-fldate,
+      END OF result_line .
+    DATA:
+      result_tab LIKE TABLE OF result_line .
+ENDCLASS.
+
+
+
+CLASS CL_DEMO_ADBC_QUERY IMPLEMENTATION.
+
+
+  METHOD main.
+
+    DATA(carrid) = CONV sflight-carrid( 'LH' ).
+    DATA cols TYPE adbc_column_tab.
+    cols = VALUE #( ( CONV adbc_name( 'CARRID' ) )
+                    ( CONV adbc_name( 'CONNID' ) )
+                    ( CONV adbc_name( 'FLDATE' ) ) ).
+
+    cl_demo_input=>new( )->request( CHANGING field = carrid ).
+
+    TRY.
+        FINAL(result) = NEW cl_sql_statement( )->execute_query(
+         `SELECT CARRID, CONNID, FLDATE ` &&
+         `FROM SFLIGHT ` &&
+         `WHERE MANDT  = ` && `'` && sy-mandt && `' AND` &&
+         `      CARRID = ` &&  cl_abap_dyn_prg=>quote(
+                                 to_upper( carrid ) ) ).
+        result->set_param_table( itab_ref = REF #( result_tab )
+                                 corresponding_fields = cols ).
+        IF result->next_package( ) > 0.
+          SORT result_tab BY carrid connid fldate.
+          out->write( result_tab ).
+        ENDIF.
+        result->close( ).
+      CATCH cx_sql_exception INTO FINAL(err).
+        out->write(  err->get_text( ) ).
+    ENDTRY.
+  ENDMETHOD.
+ENDCLASS.
