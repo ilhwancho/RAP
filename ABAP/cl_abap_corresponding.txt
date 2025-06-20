@@ -1,0 +1,46 @@
+******참고문서: https://help.sap.com/doc/abapdocu_750_index_htm/7.50/en-US/abencl_abap_corresponding.htm
+
+
+********cl_abap_corresponding=>mapping_table의 파라미터 설명*********************************
+* LEVEL
+*   Level of the components in the structure or row structure. The value 0 stands for the top level.
+* KIND
+*   Mapping type. The possible values are:
+*     CL_ABAP_CORRESPONDING=>MAPPING_COMPONENT (1) (The components specified in this row are mapped to each other.)
+*     CL_ABAP_CORRESPONDING=>MAPPING_EXCEPT_COMPONENT (2) (The component of the source structure specified in this row is excluded from the mapping of identically named components.)
+*     CL_ABAP_CORRESPONDING=>MAPPING_EXCEPT_ALL (3) (All components of the current source structure are excluded from the mapping of identically name components.)
+* SRCNAME
+*     Component of the source structure.
+* DSTNAME
+*     Component of the target (destination) structure.
+
+**********************************************************************
+DATA:
+  BEGIN OF struct1,
+    a1 TYPE string VALUE 'a1',
+    a2 TYPE string VALUE 'a2',
+    a3 TYPE string VALUE 'a3',
+    a4 TYPE string VALUE 'a4',
+    a5 TYPE string VALUE 'a5',
+  END OF struct1,
+  BEGIN OF struct2,
+    b1 TYPE string VALUE 'b1',
+    b2 TYPE string VALUE 'b2',
+    b3 TYPE string VALUE 'b3',
+    a4 TYPE string VALUE 'b4',
+    a5 TYPE string VALUE 'b5',
+  END OF struct2.
+
+DATA(mapper) =
+  cl_abap_corresponding=>create(
+    source            = struct1
+    destination       = struct2
+    mapping           = VALUE cl_abap_corresponding=>mapping_table(
+      ( level = 0 kind = 1 srcname = 'a1' dstname = 'b3' )
+      ( level = 0 kind = 1 srcname = 'a3' dstname = 'b1' )
+      ( level = 0 kind = 3 ) ) ).
+
+mapper->execute( EXPORTING source      = struct1
+                 CHANGING  destination = struct2 ).
+
+out->write( struct2 ).

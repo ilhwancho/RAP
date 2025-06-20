@@ -1,0 +1,25 @@
+
+    DATA: lt_map TYPE  HASHED TABLE OF name_mapping WITH UNIQUE KEY abap .
+
+    lt_map = VALUE #( ( abap = 'salesordertype' json = 'SalesOrderType' )
+                      ( abap = 'soldtoparty' json = 'SoldToParty' )
+                      ( abap = 'salesorganization' json = 'SalesOrganization' )
+                      ( abap = 'distributionchannel' json = 'DistributionChannel' )
+                      ( abap = 'organizationdivision' json = 'OrganizationDivision' )
+                      ( abap = 'purchaseorderbycustomer' json = 'PurchaseOrderByCustomer' )
+                      ( abap = 'completedeliveryisdefined' json = 'CompleteDeliveryIsDefined' )
+                      ( abap = 'partnerfunction' json = 'PartnerFunction' )
+                      ( abap = 'customer' json = 'Customer' )
+                      ( abap = 'language' json = 'Language' )
+                      ( abap = 'longtextid' json = 'LongTextID' )
+                      ( abap = 'longtext' json = 'LongText' )
+                      ( abap = 'product' json = 'Product' )
+                      ( abap = 'requestedquantity' json = 'RequestedQuantity' )
+                      ( abap = 'requestedquantityisounit' json = 'RequestedQuantityISOUnit' )
+                      ( abap = 'salesorderitemcategory'  json = 'SalesOrderItemCategory' )
+                      ( abap = '_ITEM'  json = '_Item')
+                      ( abap = '_TEXT'  json = '_Text') ).
+
+    lv_json_post = /ui2/cl_json=>serialize( data = is_data
+                                            name_mappings = lt_map
+                                            format_output = abap_true ).

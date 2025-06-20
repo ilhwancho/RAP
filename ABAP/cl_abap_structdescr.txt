@@ -1,0 +1,26 @@
+** 아밥 스트럭쳐 구조의 필드 이름과 속성 길이 데시멀을 출력해준다.
+**********************************************************************
+   out->write( `---------- filled_components method ----------` ).
+    "It returns an internal table containing the names of the non-initial
+    "components of the structure and their index.
+    TYPES: BEGIN OF zdemo_abap_carr,
+            carrid type c LENGTH 2,
+            field2 type c LENGTH 1,
+            field3 type c length 1,
+            END OF zdemo_abap_carr.
+
+    DATA: BEGIN OF struct,
+            a TYPE c LENGTH 1,
+            b TYPE i,
+            c TYPE zdemo_abap_carr,
+            d TYPE REF TO string,
+          END OF struct.
+
+    struct = VALUE #( a = 'X'
+                      b = 123
+                      c = VALUE #( carrid = 'LH' )
+                      d = NEW #( `ABAP` ) ).
+
+    "Getting component information using RTTI
+    DATA(all_comps) = CAST cl_abap_structdescr(  cl_abap_typedescr=>describe_by_data( struct ) )->components.
+    out->write( all_comps ).
