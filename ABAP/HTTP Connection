@@ -12,3 +12,54 @@ data(lo_reqeust) = o_http_client->get_http_request( ).
         i_password = 'Password'  ).
   lo_reqeust->set_header_field( i_name = 'CONTENT-TYPE' i_value = 'APPLICATION/JSON' ).
   lo_reqeust->set_text( lv_json_post ).
+************************************************************************************************************
+
+CLASS zcl_demo_abap DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
+
+  PUBLIC SECTION.
+    INTERFACES if_oo_adt_classrun.
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+    CONSTANTS url_api TYPE string VALUE `https://api.github.com/markdown`.
+ENDCLASS.
+
+
+
+CLASS zcl_demo_abap IMPLEMENTATION.
+
+
+  METHOD if_oo_adt_classrun~main.
+
+    DATA(markdown_content) =
+    `# Lorem ipsum dolor sit amet \n`    &&
+    `Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. \n` &&
+    `Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. \n` &&
+    `- Duis aute irure \n` &&
+    `- Dolor in reprehenderit in voluptate \n` &&
+    `1. Velit esse cillum dolore eu fugiat nulla pariatur \n` &&
+    `2. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. \n` &&
+    `3. [ABAP cheat sheets](https://github.com/SAP-samples/abap-cheat-sheets)`.
+
+    TRY.
+        "Creation of a client object using a destination
+        "This example deals with a POST request.
+        DATA(http_client) = cl_web_http_client_manager=>create_by_http_destination( i_destination = cl_http_destination_provider=>create_by_url( i_url = url_api ) ).
+        DATA(request) = http_client->get_http_request( ).
+        request->set_text( `{"text":"` && markdown_content && `"}` ).
+        request->set_header_fields( VALUE #( ( name = 'Accept' value = 'application/vnd.github+json' ) ) ).
+        DATA(post) = http_client->execute( if_web_http_client=>post ).
+        DATA(status) = post->get_status( ).
+        IF status-code <> 200.
+          out->write( |Post request error: { status-code } / { status-reason }| ).
+        ELSE.
+          DATA(html) = post->get_text( ).
+          out->write( html ).
+        ENDIF.
+      CATCH cx_root INTO DATA(error).
+        out->write( error->get_text( ) ).
+    ENDTRY.
+  ENDMETHOD.
+ENDCLASS.
