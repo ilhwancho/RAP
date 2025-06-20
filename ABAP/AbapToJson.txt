@@ -1,3 +1,4 @@
+** sample : https://github.com/SAP/abap-to-json/blob/main/docs/basic.md
 
     DATA: lt_map TYPE  HASHED TABLE OF name_mapping WITH UNIQUE KEY abap .
 
