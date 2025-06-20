@@ -1,0 +1,13 @@
+    create_regexp so_regex_date '^(\d{4})-(\d{2})-(\d{2})(?:[^T]|$)'.
+    create_regexp so_regex_time '^(\d{2}):(\d{2}):(\d{2})'.
+    create_regexp so_regex_guid '^([0-9A-Fa-f]{8})-([0-9A-Fa-f]{4})-([0-9A-Fa-f]{4})-([0-9A-Fa-f]{4})-([0-9A-Fa-f]{12})\s*$'. " support for Edm.Guid
+    " support for Edm.DateTime => http://www.odata.org/documentation/odata-version-2-0/json-format/
+    create_regexp so_regex_edm_date_time '^\/[Dd][Aa][Tt][Ee]\((-?\d+)([+-]\d{1,4})?\)\/\s*$'.
+    " support for Edm.Time => https://www.w3.org/TR/xmlschema11-2/#nt-durationRep
+    create_regexp so_regex_edm_time '^-?P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)(?:\.(\d+))?S)?)?\s*$'.
+
+    create_regexp so_regex_generate_normalize '[^0-9a-zA-Z_]{1,}'.
+    create_regexp so_regex_generate_camel_case '([a-z])([A-Z])'.
+    create_regexp so_regex_generate_type_detect '"(?:(?:\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:[\.,]\d{0,9})?(?:Z|(?:[+-]\d{2}:\d{2})))|(?:\d{4}-\d{2}-\d{2})|(?:\d{2}:\d{2}:\d{2}))"'.
+
+    create_regexp so_regex_unescape_spec_char '\\[rntfbu\\]'.
