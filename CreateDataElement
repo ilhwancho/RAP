@@ -1,0 +1,60 @@
+CLASS zcl_dtel_generator DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC.
+
+  PUBLIC SECTION.
+    CLASS-METHODS:
+      create_data_element
+        IMPORTING
+          iv_name         TYPE sxco_ad_object_name
+          iv_package      TYPE devclass
+          iv_transport    TYPE sxco_transport
+          iv_description  TYPE string
+          iv_domain_name  TYPE sxco_ad_object_name
+          iv_label_short  TYPE string
+          iv_label_long   TYPE string.
+ENDCLASS.
+
+
+CLASS zcl_dtel_generator IMPLEMENTATION.
+
+  METHOD create_data_element.
+    " 1. 파라미터로 받은 Transport를 사용하여 Generation Environment 설정
+    DATA(lo_put_operation) = xco_cp_generation=>environment->dev_system( iv_transport )
+      ->create_put_operation( ).
+
+    " 2. 데이터 엘리먼트 명세(Specification) 정의
+    DATA(lo_specification) = lo_put_operation->for_dtel( iv_name )
+      ->get_specification( ).
+
+    " 3. 기본 속성 설정 (패키지, 설명)
+    lo_specification->set_short_description( iv_description )
+                    ->set_package( iv_package ).
+
+    " 4. 데이터 타입 설정 (전달받은 도메인 명 참조)
+    lo_specification->set_data_type( 
+        xco_cp_abap_dictionary=>data_element_data_type->domain( iv_domain_name ) 
+    ).
+
+    " 5. 레이블 설정
+    lo_specification->field_label->short->set_text( CONV #( iv_label_short ) ).
+    lo_specification->field_label->medium->set_text( CONV #( iv_label_long ) ).
+    lo_specification->field_label->long->set_text( CONV #( iv_label_long ) ).
+    lo_specification->field_label->heading->set_text( CONV #( iv_label_long ) ).
+
+    " 6. 실행 (데이터베이스에 오브젝트 생성)
+    lo_put_operation->execute( ).
+  ENDMETHOD.
+
+ENDCLASS.
+
+zcl_dtel_generator=>create_data_element(
+  iv_name         = 'Z_NEW_ELEMENT'
+  iv_package      = 'Z_DEVELOPMENT_PKG'  " 입력받은 패키지
+  iv_transport    = 'DEVK900123'         " 입력받은 전송요청번호
+  iv_description  = 'Dynamic Element Description'
+  iv_domain_name  = 'Z_EXISTING_DOM'
+  iv_label_short  = 'NewElem'
+  iv_label_long   = 'Newly Created Element'
+).
