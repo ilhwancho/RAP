@@ -9,10 +9,14 @@ RAP 프레임워크 내부 분석용. 로그인은 adt_login.py 를 재사용합
   python tools/adt/adt_source.py get I_SALESORDERTP --type ddls
   python tools/adt/adt_source.py methods CL_RAP_TRANSACTION_MANAGER     # 메서드 목록 + 줄번호
   python tools/adt/adt_source.py show CL_RAP_TRANSACTION_MANAGER _process_save_sequence  # 메서드 본문 출력
+  python tools/adt/adt_source.py docu COMMIT ENTITIES                   # ABAP 키워드 문서 (검색/본문)
+  python tools/adt/adt_source.py docu ABAPMODIFY_ENTITY_ENTITIES --object
+  python tools/adt/adt_source.py docu determination --bdef              # BDEF 키워드 문서 검색
 
 다운로드 위치: 환경변수 ADT_SRC_DIR (기본 /tmp/adt_src). 이미 받은 파일은 재사용 (--refresh 로 강제 갱신).
 """
 import argparse
+import html
 import os
 import re
 import sys
@@ -108,12 +112,45 @@ def show(name, method, typ=None):
     print(f"메서드 {method} 를 찾지 못함", file=sys.stderr)
 
 
+DOCU_ACCEPT = "application/vnd.sap.adt.docu.v1+html"
+
+
+def _html_to_text(h):
+    h = re.sub(r"(?s)<(script|style|head)\b.*?</\1>", "", h)
+    h = re.sub(r"(?i)<br\s*/?>|</(p|div|h\d|li|tr|pre)>", "\n", h)
+    h = re.sub(r"<[^>]+>", "", h)
+    h = html.unescape(h)
+    lines = [re.sub(r"[ \t]+", " ", ln).strip() for ln in h.splitlines()]
+    return "\n".join(ln for ln in lines if ln)
+
+
+def docu(query=None, obj=None, kind="abap"):
+    """ABAP 키워드 문서 조회. query: 검색어, obj: 문서 object id (예 ABAPMODIFY_ENTITY_ENTITIES).
+    반환: (본문 텍스트, [(object_id, 제목), ...] 검색결과 링크)"""
+    if kind == "bdef":
+        path, params = "/sap/bc/adt/bo/behaviordefinitions/docu/langu", {"searchWord": query}
+    elif obj:
+        path, params = "/sap/bc/adt/docu/abap/langu", {"sap-language": "EN", "version": "X", "object": obj}
+    else:
+        path, params = "/sap/bc/adt/docu/abap/langu", {"format": "eclipse", "language": "EN", "query": query}
+    r = _get(path, accept=DOCU_ACCEPT, **params)
+    t = r.content.decode("utf-8", "replace")
+    links = []
+    for oid, title in re.findall(r'href="adtcom:[^"]*object=([A-Z0-9_]+)[^"]*"[^>]*>(.*?)</a>', t, re.S):
+        title = html.unescape(re.sub(r"<[^>]+>", "", title)).strip()
+        if (oid, title) not in links:
+            links.append((oid, title))
+    return _html_to_text(t), links
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("cmd", choices=["search", "get", "methods", "show"])
+    p.add_argument("cmd", choices=["search", "get", "methods", "show", "docu"])
     p.add_argument("args", nargs="+")
     p.add_argument("--type", choices=["clas", "intf", "bdef", "ddls"])
     p.add_argument("--refresh", action="store_true")
+    p.add_argument("--object", action="store_true", help="docu: 인자를 문서 object id 로 취급")
+    p.add_argument("--bdef", action="store_true", help="docu: BDEF 키워드 문서 검색")
     a = p.parse_args()
     if a.cmd == "search":
         for pat in a.args:
@@ -126,6 +163,16 @@ def main():
         print("\n".join(methods(a.args[0], a.type)))
     elif a.cmd == "show":
         show(a.args[0], a.args[1], a.type)
+    elif a.cmd == "docu":
+        q = " ".join(a.args)
+        text, links = docu(obj=q if a.object else None, query=None if a.object else q,
+                           kind="bdef" if a.bdef else "abap")
+        if not a.object and links and text.count("\n") < 40:
+            print("검색 결과 (--object <ID> 로 본문 조회):")
+            for oid, title in links:
+                print(f"  {oid:40} {title}")
+        else:
+            print(text)
 
 
 if __name__ == "__main__":
