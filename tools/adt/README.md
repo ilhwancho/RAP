@@ -16,6 +16,13 @@ python tools/adt/adt_login.py              # 로그인 테스트
 python tools/adt/cds_view.py I_Country     # CDS 소스 + 데이터 10행
 python tools/adt/cds_view.py I_Country --rows 20
 python tools/adt/cds_view.py I_Country --source-only
+
+# ABAP 소스 검색/조회 (SAP 표준 포함, 기본 저장 위치 /tmp/adt_src)
+python tools/adt/adt_source.py search "CL_RAP_*"
+python tools/adt/adt_source.py get CL_RAP_TRANSACTION_MANAGER
+python tools/adt/adt_source.py methods CL_RAP_TRANSACTION_MANAGER
+python tools/adt/adt_source.py show CL_RAP_TRANSACTION_MANAGER _process_save_sequence
+python tools/adt/adt_source.py get I_SALESORDERTP --type bdef
 ```
 
 ## 참고
