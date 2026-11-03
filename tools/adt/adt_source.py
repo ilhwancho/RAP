@@ -9,7 +9,8 @@ RAP 프레임워크 내부 분석용. 로그인은 adt_login.py 를 재사용합
   python tools/adt/adt_source.py get I_SALESORDERTP --type ddls
   python tools/adt/adt_source.py methods CL_RAP_TRANSACTION_MANAGER     # 메서드 목록 + 줄번호
   python tools/adt/adt_source.py show CL_RAP_TRANSACTION_MANAGER _process_save_sequence  # 메서드 본문 출력
-  python tools/adt/adt_source.py docu COMMIT ENTITIES                   # ABAP 키워드 문서 (검색/본문)
+  python tools/adt/adt_source.py docu COMMIT ENTITIES                   # ABAP 키워드 문서 (기본 ABAP Cloud 버전)
+  python tools/adt/adt_source.py docu COMMIT ENTITIES --standard        # Standard ABAP 버전
   python tools/adt/adt_source.py docu ABAPMODIFY_ENTITY_ENTITIES --object
   python tools/adt/adt_source.py docu determination --bdef              # BDEF 키워드 문서 검색
 
@@ -121,18 +122,25 @@ def _html_to_text(h):
     h = re.sub(r"<[^>]+>", "", h)
     h = html.unescape(h)
     lines = [re.sub(r"[ \t]+", " ", ln).strip() for ln in h.splitlines()]
-    return "\n".join(ln for ln in lines if ln)
+    noise = {"ABAP Keyword Documentation", "Select VersionStandard ABAPABAP Cloud", "Mail Feedback", "Open in Browser"}
+    return "\n".join(ln for ln in lines if ln and ln not in noise)
 
 
-def docu(query=None, obj=None, kind="abap"):
+DOCU_VERSIONS = {"cloud": "5", "standard": "X"}  # 5 = ABAP Cloud (ABAP for Cloud Development), X = Standard ABAP
+
+
+def docu(query=None, obj=None, kind="abap", version="cloud"):
     """ABAP 키워드 문서 조회. query: 검색어, obj: 문서 object id (예 ABAPMODIFY_ENTITY_ENTITIES).
+    version: "cloud"(기본, ABAP Cloud) | "standard"(Standard ABAP).
     반환: (본문 텍스트, [(object_id, 제목), ...] 검색결과 링크)"""
+    ver = DOCU_VERSIONS[version]
     if kind == "bdef":
-        path, params = "/sap/bc/adt/bo/behaviordefinitions/docu/langu", {"searchWord": query}
+        path, params = "/sap/bc/adt/bo/behaviordefinitions/docu/langu", {"searchWord": query, "version": ver}
     elif obj:
-        path, params = "/sap/bc/adt/docu/abap/langu", {"sap-language": "EN", "version": "X", "object": obj}
+        path, params = "/sap/bc/adt/docu/abap/langu", {"sap-language": "EN", "version": ver, "object": obj}
     else:
-        path, params = "/sap/bc/adt/docu/abap/langu", {"format": "eclipse", "language": "EN", "query": query}
+        path, params = "/sap/bc/adt/docu/abap/langu", {"format": "eclipse", "language": "EN", "query": query,
+                                                       "version": ver}
     r = _get(path, accept=DOCU_ACCEPT, **params)
     t = r.content.decode("utf-8", "replace")
     links = []
@@ -151,6 +159,7 @@ def main():
     p.add_argument("--refresh", action="store_true")
     p.add_argument("--object", action="store_true", help="docu: 인자를 문서 object id 로 취급")
     p.add_argument("--bdef", action="store_true", help="docu: BDEF 키워드 문서 검색")
+    p.add_argument("--standard", action="store_true", help="docu: Standard ABAP 버전 (기본은 ABAP Cloud)")
     a = p.parse_args()
     if a.cmd == "search":
         for pat in a.args:
@@ -166,7 +175,7 @@ def main():
     elif a.cmd == "docu":
         q = " ".join(a.args)
         text, links = docu(obj=q if a.object else None, query=None if a.object else q,
-                           kind="bdef" if a.bdef else "abap")
+                           kind="bdef" if a.bdef else "abap", version="standard" if a.standard else "cloud")
         if not a.object and links and text.count("\n") < 40:
             print("검색 결과 (--object <ID> 로 본문 조회):")
             for oid, title in links:

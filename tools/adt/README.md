@@ -24,8 +24,9 @@ python tools/adt/adt_source.py methods CL_RAP_TRANSACTION_MANAGER
 python tools/adt/adt_source.py show CL_RAP_TRANSACTION_MANAGER _process_save_sequence
 python tools/adt/adt_source.py get I_SALESORDERTP --type bdef
 
-# ABAP 키워드 문서 (F1 도움말)
+# ABAP 키워드 문서 (F1 도움말) - 기본 ABAP Cloud 버전, Standard ABAP 은 --standard
 python tools/adt/adt_source.py docu COMMIT ENTITIES
+python tools/adt/adt_source.py docu COMMIT ENTITIES --standard
 python tools/adt/adt_source.py docu ABAPMODIFY_ENTITY_ENTITIES --object
 python tools/adt/adt_source.py docu "determination on save" --bdef
 ```
