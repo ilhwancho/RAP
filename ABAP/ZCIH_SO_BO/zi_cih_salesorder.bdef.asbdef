@@ -1,0 +1,28 @@
+interface;
+use draft;
+
+define behavior for ZI_CIH_SalesOrder alias SalesOrder
+{
+  use create;
+  use update;
+  use delete;
+
+  use action acceptOrder;
+  use action rejectOrder;
+
+  use action Resume;
+  use action Edit;
+  use action Activate;
+  use action Discard;
+  use action Prepare;
+
+  use association _Item { create; with draft; }
+}
+
+define behavior for ZI_CIH_SalesOrderItem alias SalesOrderItem
+{
+  use update;
+  use delete;
+
+  use association _SalesOrder { with draft; }
+}
