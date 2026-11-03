@@ -1,0 +1,102 @@
+managed implementation in class zbp_r_cih_salesorder unique;
+strict ( 2 );
+with draft;
+
+define behavior for ZR_CIH_SalesOrder alias SalesOrder
+persistent table zat_cih_soh
+draft table zdt_cih_soh
+etag master LocalLastChangedAt
+lock master total etag LastChangedAt
+authorization master ( global )
+{
+  field ( readonly ) SalesOrderUUID, SalesOrderID, OverallStatus, TotalAmount,
+                     LocalCreatedBy, LocalCreatedAt, LocalLastChangedBy, LocalLastChangedAt, LastChangedAt;
+  field ( numbering : managed ) SalesOrderUUID;
+  field ( mandatory ) CustomerID, OrderDate, CurrencyCode;
+
+  create;
+  update;
+  delete;
+
+  association _Item { create; with draft; }
+
+  action ( features : instance ) acceptOrder result [1] $self;
+  action ( features : instance ) rejectOrder result [1] $self;
+  internal action recalcTotalAmount;
+
+  determination setSalesOrderID on save { create; }
+  determination setInitialValues on modify { create; }
+
+  validation validateCustomer on save { create; field CustomerID; }
+  validation validateDates on save { create; field OrderDate, DeliveryDate; }
+
+  draft action Resume;
+  draft action Edit;
+  draft action Activate optimized;
+  draft action Discard;
+
+  draft determine action Prepare
+  {
+    validation validateCustomer;
+    validation validateDates;
+    validation SalesOrderItem~validateQuantity;
+  }
+
+  mapping for zat_cih_soh
+  {
+    SalesOrderUUID     = sales_order_uuid;
+    SalesOrderID       = sales_order_id;
+    CustomerID         = customer_id;
+    Description        = description;
+    OrderDate          = order_date;
+    DeliveryDate       = delivery_date;
+    OverallStatus      = overall_status;
+    TotalAmount        = total_amount;
+    CurrencyCode       = currency_code;
+    LocalCreatedBy     = local_created_by;
+    LocalCreatedAt     = local_created_at;
+    LocalLastChangedBy = local_last_changed_by;
+    LocalLastChangedAt = local_last_changed_at;
+    LastChangedAt      = last_changed_at;
+  }
+}
+
+define behavior for ZR_CIH_SalesOrderItem alias SalesOrderItem
+persistent table zat_cih_soi
+draft table zdt_cih_soi
+etag master LocalLastChangedAt
+lock dependent by _SalesOrder
+authorization dependent by _SalesOrder
+{
+  field ( readonly ) ItemUUID, ParentUUID, ItemNo, NetAmount, CurrencyCode,
+                     LocalCreatedBy, LocalCreatedAt, LocalLastChangedBy, LocalLastChangedAt;
+  field ( numbering : managed ) ItemUUID;
+  field ( mandatory ) ProductID, Quantity, QuantityUnit, UnitPrice;
+
+  update;
+  delete;
+
+  association _SalesOrder { with draft; }
+
+  determination setItemDefaults on modify { create; }
+  determination calcNetAmount on modify { create; field Quantity, UnitPrice; }
+
+  validation validateQuantity on save { create; field Quantity; }
+
+  mapping for zat_cih_soi
+  {
+    ItemUUID           = item_uuid;
+    ParentUUID         = parent_uuid;
+    ItemNo             = item_no;
+    ProductID          = product_id;
+    Quantity           = quantity;
+    QuantityUnit       = quantity_unit;
+    UnitPrice          = unit_price;
+    NetAmount          = net_amount;
+    CurrencyCode       = currency_code;
+    LocalCreatedBy     = local_created_by;
+    LocalCreatedAt     = local_created_at;
+    LocalLastChangedBy = local_last_changed_by;
+    LocalLastChangedAt = local_last_changed_at;
+  }
+}

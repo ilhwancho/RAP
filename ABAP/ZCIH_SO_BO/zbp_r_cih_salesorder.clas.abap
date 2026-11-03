@@ -1,0 +1,5 @@
+CLASS zbp_r_cih_salesorder DEFINITION PUBLIC ABSTRACT FINAL FOR BEHAVIOR OF zr_cih_salesorder.
+ENDCLASS.
+
+CLASS zbp_r_cih_salesorder IMPLEMENTATION.
+ENDCLASS.
