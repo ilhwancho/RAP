@@ -1,5 +1,6 @@
 interface;
 use draft;
+use side effects;
 
 define behavior for ZI_CIH_SalesOrder alias SalesOrder
 {
