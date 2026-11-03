@@ -6,6 +6,12 @@ ABAP RAP 학습/개발용 레포. SAP S/4HANA Cloud 시스템 `Z5U` (`https://my
 - `tools/adt/` 참조 (IAS SAML 로그인, 환경변수 `SAP_ADT_USER`, `SAP_ADT_PASSWARD`).
   - 환경변수 `SAP_ADT_URL` 은 호스트가 아니라 패턴 값이므로 `SAP_ADT_HOST` 로 쓰지 말 것 (기본값 사용).
 - 소스 조회: `python tools/adt/adt_source.py search|get|methods|show ...` (SAP 표준 소스 포함)
+- ABAP 키워드 문서(F1): `python tools/adt/adt_source.py docu <검색어>` → 결과의 object id 로 `docu <ID> --object`, BDEF 키워드는 `--bdef`.
+  - 기본은 **ABAP Cloud 버전**(`version=5`, "ABAP for Cloud Development"). Standard ABAP 은 `--standard`.
+  - **ABAP Cloud 로 작업할 때는 ABAP Cloud 버전 문서가 Standard ABAP 문서보다 우선한다.** 두 문서가 다르면 Cloud 버전을 따른다.
+    Standard 문서는 Cloud 문서에 없는 배경 설명이 필요할 때만 참고하고, 그 내용이 Cloud 에서 허용되는지 Cloud 문서·released API 여부로 다시 확인한다.
+  - 이 시스템(Z5U)의 개발 패키지는 언어 버전 5(ABAP for Cloud Development) 이므로 기본적으로 ABAP Cloud 작업으로 간주한다.
+  - 문법·제약을 확인할 때는 추측하지 말고 키워드 문서를 먼저 본다 (시스템 릴리스 기준 문서).
 - CDS 조회: `python tools/adt/cds_view.py <CDS명>`
 - 객체 생성/수정/활성화 흐름(lock → PUT source → unlock → activate)은 `docs/adt-object-deploy.md` 참조.
 
