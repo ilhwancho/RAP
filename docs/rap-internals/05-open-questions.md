@@ -11,6 +11,8 @@
 - [ ] READ ENTITIES 흐름: `EXECUTE_READ` → `if_rap_eml_processor~read`
 - [ ] OData 단건 요청(비 batch) 경로, `$expand` deep create (`deep_create_data`), list upsert (`CL_RAP_BHV_LIST_UPSERT`)
 - [ ] strict mode / state message 처리 (`mo_strict_mode_handler`, `CL_RAP_CHANGESET_STATE_MSGS`)
+- [ ] 외부 `COMMIT WORK` 경로의 cleanup 호출 시점 (`CL_ABAP_BEHV_TRANSACTION_CTRL=>CALL_CLEANUP`)
+- [ ] 한 `$batch` 의 여러 changeset 이 같은 ABAP 세션인지 (static/class-data 공유 여부)
 - [ ] 이벤트 (`raise entity event`, `CL_ABAP_BEHV_EVENTS`) 발행 시점
 
 ## 소스로 확인 불가

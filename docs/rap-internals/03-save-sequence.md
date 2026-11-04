@@ -58,6 +58,27 @@ method check_before_save.   " validation
 - activate optimized (`draft action Activate optimized`) 이면 `detact_buffer->filter_instances` 로 이미 Prepare 에서 처리된 인스턴스를 걸러 재실행 방지.
 - `exec_validations`: `kind 'V'` 전부 `exec_type 'S'` (validation 은 on save 만). 실행 중 `val_active = abap_true` → MODIFY 시 덤프.
 
+## 세이버가 언제 불리나 / 앱 상태(class-data) 수명 ✅
+
+- **세이버 수집 = MODIFY 수준 job 이 실행될 때**: `CL_ABAP_BEHV_CTRL=>GROUP_BEHV_BY_CLSS` 에서 `job->m_level` 이 `modify_direct|modify_base` 이면
+  `acc_modify = 'X'`(락이면 `'L'`, privileged 면 `'P'`) 로 `COLLECT_SAVERS`. → 버퍼가 실제로 바뀌었는지와 무관.
+  **static action 을 `MODIFY ... EXECUTE` 로 호출만 해도 그 BO 세이버가 다음 세이브 시퀀스에서 호출된다.**
+  (READ 만 한 BO 는 acc_modify 없음 → CLEANUP 외 단계 생략, `CALL_COLLECTED_SAVERS`)
+- **managed + additional/unmanaged save 의 `save_modified` 는 변경 인스턴스가 없어도 호출**:
+  `CL_ABAP_BEHV_SAVER_MNGD_CSP->CALL_SAVE_MODIFIED` 에 빈 변경이면 return 하는 최적화가 주석 처리돼 있음
+  (`* Incompatible optimization (apps rely on being called even for empty)`). 단 앱 sub saver 에 `SAVE_MODIFIED` 구현이 있을 때만.
+- **cleanup 경로**: 성공 COMMIT(`_save` → `_cleanup`), `ROLLBACK ENTITIES`(`EXECUTE_ROLLBACK` → `eml_processor->discard_changes` →
+  트랜잭션 매니저 `_discard_changes` → `_cleanup` + `ROLLBACK WORK`), OData changeset 실패(`discard_changes`) 모두
+  `bhv->cleanup` → `CALL_COLLECTED_SAVERS( CLEANUP )` → `CL_ABAP_BEHV_SAVER_MNGD_CSP->CLEANUP` → 앱 sub saver `cleanup( )`.
+  CLEANUP 단계는 acc_modify 없는 세이버도 호출.
+- early failure(finalize/check_before_save 실패) 시에는 `cleanup_finalize` 만 호출되고 **cleanup 은 호출되지 않음** → 버퍼 유지(재COMMIT 가능).
+- 프레임워크는 **앱의 class-data/static 버퍼를 비우지 않는다** (`reset_singletons`, `detval=>cleanup` 은 프레임워크 내부 상태만).
+  → 앱 버퍼는 앱 세이버 `cleanup` 에서 CLEAR, finalize 에서 만든 임시 상태는 `cleanup_finalize` 에서 CLEAR.
+- ⚠️ 외부 `COMMIT WORK`(exit mode `before_commit`) 경로에서 cleanup 호출 시점은 미확인 (`_save` 는 exit mode none 일 때만 `_cleanup`;
+  `CL_ABAP_BEHV_TRANSACTION_CTRL=>HANDLER_COMMIT_FINISHED / CALL_CLEANUP` 추정).
+- ⚠️ OData: 요청마다 새 ABAP 세션(stateless) 이라 요청 간 class-data 는 이어지지 않음. 한 `$batch` 안 여러 changeset 은 같은 세션으로 추정
+  → cleanup 에서 비우지 않으면 다음 changeset 에 이전 값이 남는다 (Gateway 소스 비공개로 미확인).
+
 ## COMMIT ENTITIES 결과 ✅ (`EXECUTE_COMMIT`)
 - `rc = 0` 성공, `rc = 4` early failure(finalize/check_before_save), `rc = 8` late failure(point of no return 이후).
 - 실패 시 `transaction_ctrl=>resume( )` — **버퍼는 남는다** → 앱이 `ROLLBACK ENTITIES` 하거나 수정 후 재COMMIT. (OData 는 자동 discard, 04 참조)

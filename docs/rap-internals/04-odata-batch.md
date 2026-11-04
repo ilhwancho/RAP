@@ -56,14 +56,5 @@ lo_changeset_smsgs->handle_state_messages( ... )
 ## 메시지
 - 실패 시 `et_message` (transition), 성공 시 `SAP__Messages` 요청 엔티티에 state message 재조회 (`_postprocess_changeset`, `_upsert_elist_get_state_msgs`).
 
-## 액션 파라미터 필수 처리 (abstract entity / abstract BDEF) ✅ (2026-11-04 실측, Web API 바인딩)
-시험 객체: `ZD_CIH_SOActParam`(root abstract entity) + abstract BDEF(`with hierarchy`, `with control`, `field ( mandatory : execute ) Quantity`),
-`ZR_CIH_SalesOrder` 의 `static action testFlatParam parameter ...` / `testDeepParam deep parameter ...`, 서비스 `ZAPI_CIH_SALESORDER_O4`.
-- flat `parameter`: 컴파일 경고 "used as a flat type; its BDEF definition ("with hierarchy") is not used" → `mandatory : execute` 무시.
-  `$metadata` 에 파라미터 어노테이션 없음 → Gateway 가 **모든 파라미터를 필수**로 취급 (하나라도 빠지면 400 `No value for mandatory parameter`).
-- `deep parameter`: `$metadata` 에 `Quantity` = `SAP__common.FieldControl/Mandatory`, 나머지 = `SAP__core.OptionalParameter`.
-  `Quantity` 생략 시 400 (`/IWCOR/CX_OD_EP_PARAM_ERROR`, RAP 핸들러 도달 전 Gateway 에서 거부), 나머지 생략은 204 (초기값으로 전달).
-- 둘 다 **존재 여부만** 검사: `Quantity: 0` 은 통과. `null` 은 `Nullable=false` 라 400 (파싱 오류). 값 검증은 액션 구현에서 해야 함.
-- 대조 시험: `mandatory : execute` 를 빼면 deep 에서도 `Quantity` 가 `OptionalParameter` 가 되고 생략 시 204 → 400 은 `mandatory : execute` 효과임을 확인.
-  변경 후에는 abstract BDEF 뿐 아니라 이를 쓰는 BO/프로젝션 BDEF 도 재활성화해야 메타데이터에 반영됨(이번 시험에서 함께 재활성화).
-- OData 에서는 덤프가 아니라 400. (EML 에서 `%control` 미설정 시 런타임 오류는 키워드 문서 기준, 미실측)
+## 액션 파라미터
+액션 파라미터 처리(필수 필드, flat vs deep)는 [06-action-parameters.md](06-action-parameters.md) 참조.
