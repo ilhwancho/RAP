@@ -37,3 +37,4 @@ RAP 런타임(EML, 트랜잭션, 세이브 시퀀스)과 OData/Gateway 요청 �
 | 날짜 | 내용 |
 |---|---|
 | 2026-11-03 | 최초 작성: 아키텍처, interaction phase, save sequence, DVM, OData V4 changeset 처리 (`CL_ABAP_BEHV_CTRL`, `CL_RAP_BHV_PROCESSOR`, `CL_RAP_TRANSACTION_MANAGER`, `CL_ABAP_BEHV_SAVER_DVM`, `CL_ABAP_BEHV_DETVAL`, `CL_SADL_GW_V4_DPC_ADAPTER`, `CL_SADL_GW_V4_GENERIC_DPC`) |
+| 2026-11-04 | 세이버 수집 조건(acc_modify), managed `save_modified` 빈 변경 시 호출, rollback/discard 시 cleanup 경로, 앱 class-data 수명 (`GROUP_BEHV_BY_CLSS`, `COLLECT_SAVERS`, `CL_ABAP_BEHV_SAVER_MNGD_CSP`, `_discard_changes`, `EXECUTE_ROLLBACK`) |
