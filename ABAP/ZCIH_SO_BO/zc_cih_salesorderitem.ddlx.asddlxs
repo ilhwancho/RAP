@@ -1,0 +1,50 @@
+@Metadata.layer: #CORE
+@UI: {
+  headerInfo: { typeName: 'Item',
+                typeNamePlural: 'Items',
+                title: { type: #STANDARD, value: 'ItemNo' },
+                description: { type: #STANDARD, value: 'ProductID' } },
+  presentationVariant: [{ sortOrder: [{ by: 'ItemNo', direction: #ASC }] }] }
+annotate entity ZC_CIH_SalesOrderItem with
+{
+  @UI.facet: [ { id: 'Item', purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, label: 'Item', position: 10 } ]
+  @UI.hidden: true
+  ItemUUID;
+  @UI.hidden: true
+  ParentUUID;
+
+  @UI: { lineItem: [ { position: 10, importance: #HIGH } ], identification: [ { position: 10 } ] }
+  @EndUserText.label: 'Item'
+  ItemNo;
+
+  @UI: { lineItem: [ { position: 20, importance: #HIGH } ], identification: [ { position: 20 } ] }
+  @EndUserText.label: 'Product'
+  ProductID;
+
+  @UI: { lineItem: [ { position: 30, importance: #HIGH } ], identification: [ { position: 30 } ] }
+  @EndUserText.label: 'Quantity'
+  Quantity;
+
+  @UI: { identification: [ { position: 35 } ] }
+  @EndUserText.label: 'Unit'
+  QuantityUnit;
+
+  @UI: { lineItem: [ { position: 40 } ], identification: [ { position: 40 } ] }
+  @EndUserText.label: 'Unit Price'
+  UnitPrice;
+
+  @UI: { lineItem: [ { position: 50, importance: #HIGH } ], identification: [ { position: 50 } ] }
+  @EndUserText.label: 'Net Amount'
+  NetAmount;
+
+  @UI.hidden: true
+  CurrencyCode;
+  @UI.hidden: true
+  LocalCreatedBy;
+  @UI.hidden: true
+  LocalCreatedAt;
+  @UI.hidden: true
+  LocalLastChangedBy;
+  @UI.hidden: true
+  LocalLastChangedAt;
+}

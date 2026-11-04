@@ -1,0 +1,32 @@
+projection;
+strict ( 2 );
+use draft;
+use side effects;
+
+define behavior for ZC_CIH_SalesOrder alias SalesOrder
+use etag
+{
+  use create;
+  use update;
+  use delete;
+
+  use action acceptOrder;
+  use action rejectOrder;
+
+  use action Resume;
+  use action Edit;
+  use action Activate;
+  use action Discard;
+  use action Prepare;
+
+  use association _Item { create; with draft; }
+}
+
+define behavior for ZC_CIH_SalesOrderItem alias SalesOrderItem
+use etag
+{
+  use update;
+  use delete;
+
+  use association _SalesOrder { with draft; }
+}
