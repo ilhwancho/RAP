@@ -64,6 +64,18 @@ CLASS zcl_cih_so_test IMPLEMENTATION.
       INTO TABLE @DATA(items).
     out->write( items ).
 
+    " 3-1. 승인된 오더에 아이템 추가 시도 → feature control(%assoc-_Item) 로 거부되어야 함
+    MODIFY ENTITIES OF zi_cih_salesorder
+      ENTITY SalesOrder
+        CREATE BY \_Item FIELDS ( ProductID Quantity QuantityUnit UnitPrice )
+        WITH VALUE #( ( %tky    = mapped-salesorder[ 1 ]-%tky
+                        %target = VALUE #( ( %cid = 'I3' %is_draft = if_abap_behv=>mk-off
+                                             ProductID = 'TG13' Quantity = 1 QuantityUnit = 'EA' UnitPrice = '100.00' ) ) ) )
+      FAILED DATA(cba_failed).
+    ROLLBACK ENTITIES.
+    out->write( |Accepted order + CREATE BY \\_Item: { COND #( WHEN cba_failed-salesorder IS NOT INITIAL
+                                                                THEN `blocked (OK)` ELSE `NOT blocked` ) }| ).
+
     " 4. 검증 실패 케이스 (고객 없음)
     MODIFY ENTITIES OF zi_cih_salesorder
       ENTITY SalesOrder

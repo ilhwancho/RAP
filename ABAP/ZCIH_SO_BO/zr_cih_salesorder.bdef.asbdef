@@ -18,7 +18,7 @@ authorization master ( global )
   update;
   delete;
 
-  association _Item { create; with draft; }
+  association _Item { create ( features : instance ); with draft; }
 
   action ( features : instance ) acceptOrder result [1] $self;
   action ( features : instance ) rejectOrder result [1] $self;
@@ -40,6 +40,14 @@ authorization master ( global )
     validation validateCustomer;
     validation validateDates;
     validation SalesOrderItem~validateQuantity;
+  }
+
+  side effects
+  {
+    action acceptOrder affects field OverallStatus, permissions ( action acceptOrder ), permissions ( action rejectOrder ),
+                               permissions ( create _Item ), entity _Item, messages;
+    action rejectOrder affects field OverallStatus, permissions ( action acceptOrder ), permissions ( action rejectOrder ),
+                               permissions ( create _Item ), entity _Item, messages;
   }
 
   mapping for zat_cih_soh
@@ -82,6 +90,12 @@ authorization dependent by _SalesOrder
   determination calcNetAmount on modify { create; field Quantity, UnitPrice; }
 
   validation validateQuantity on save { create; field Quantity; }
+
+  side effects
+  {
+    field Quantity affects field NetAmount, field _SalesOrder.TotalAmount;
+    field UnitPrice affects field NetAmount, field _SalesOrder.TotalAmount;
+  }
 
   mapping for zat_cih_soi
   {

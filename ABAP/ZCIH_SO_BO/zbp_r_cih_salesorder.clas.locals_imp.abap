@@ -61,6 +61,10 @@ CLASS lhc_salesorder IMPLEMENTATION.
                                                       ELSE if_abap_behv=>fc-o-enabled )
                         %action-rejectOrder = COND #( WHEN order-OverallStatus = c_status-rejected
                                                       THEN if_abap_behv=>fc-o-disabled
+                                                      ELSE if_abap_behv=>fc-o-enabled )
+                        " 승인된 오더에는 아이템 추가 불가 (create-by-association 동적 제어)
+                        %assoc-_Item        = COND #( WHEN order-OverallStatus = c_status-accepted
+                                                      THEN if_abap_behv=>fc-o-disabled
                                                       ELSE if_abap_behv=>fc-o-enabled ) ) ).
   ENDMETHOD.
 
