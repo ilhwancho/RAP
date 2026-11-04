@@ -64,4 +64,6 @@ lo_changeset_smsgs->handle_state_messages( ... )
 - `deep parameter`: `$metadata` 에 `Quantity` = `SAP__common.FieldControl/Mandatory`, 나머지 = `SAP__core.OptionalParameter`.
   `Quantity` 생략 시 400 (`/IWCOR/CX_OD_EP_PARAM_ERROR`, RAP 핸들러 도달 전 Gateway 에서 거부), 나머지 생략은 204 (초기값으로 전달).
 - 둘 다 **존재 여부만** 검사: `Quantity: 0` 은 통과. `null` 은 `Nullable=false` 라 400 (파싱 오류). 값 검증은 액션 구현에서 해야 함.
+- 대조 시험: `mandatory : execute` 를 빼면 deep 에서도 `Quantity` 가 `OptionalParameter` 가 되고 생략 시 204 → 400 은 `mandatory : execute` 효과임을 확인.
+  변경 후에는 abstract BDEF 뿐 아니라 이를 쓰는 BO/프로젝션 BDEF 도 재활성화해야 메타데이터에 반영됨(이번 시험에서 함께 재활성화).
 - OData 에서는 덤프가 아니라 400. (EML 에서 `%control` 미설정 시 런타임 오류는 키워드 문서 기준, 미실측)
