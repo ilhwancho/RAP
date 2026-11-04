@@ -12,6 +12,8 @@ use etag
 
   use action acceptOrder;
   use action rejectOrder;
+  use action testFlatParam;
+  use action testDeepParam;
 
   use action Resume;
   use action Edit;

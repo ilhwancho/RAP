@@ -1,0 +1,9 @@
+abstract;
+strict ( 2 );
+with hierarchy;
+
+define behavior for ZD_CIH_SOActParam
+with control
+{
+  field ( mandatory : execute ) Quantity;
+}

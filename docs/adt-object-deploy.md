@@ -59,6 +59,7 @@
 </srvb:serviceBinding>
 ```
 - `category="0"` = UI, `"1"` = Web API. 생성 후 activate.
+  - Web API 바인딩의 서비스 URL 은 `/srvd/` 대신 `/srvd_a2x/` (`/sap/opu/odata4/sap/<바인딩>/srvd_a2x/sap/<바인딩>/0001/`)
 - 게시: `POST /sap/bc/adt/businessservices/odatav4/publishjobs?servicename=ZUI_X_O4&serviceversion=0001`
   본문 `<adtcore:objectReferences><adtcore:objectReference adtcore:type="SCSB/SVB" adtcore:name="ZUI_X_O4"/></adtcore:objectReferences>`
   - 응답이 프록시에서 502 로 끊겨도 실제로는 게시됨 → 바인딩 GET 의 `srvb:published="true"` 로 확인.

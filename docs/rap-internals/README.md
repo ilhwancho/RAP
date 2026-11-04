@@ -37,3 +37,4 @@ RAP 런타임(EML, 트랜잭션, 세이브 시퀀스)과 OData/Gateway 요청 �
 | 날짜 | 내용 |
 |---|---|
 | 2026-11-03 | 최초 작성: 아키텍처, interaction phase, save sequence, DVM, OData V4 changeset 처리 (`CL_ABAP_BEHV_CTRL`, `CL_RAP_BHV_PROCESSOR`, `CL_RAP_TRANSACTION_MANAGER`, `CL_ABAP_BEHV_SAVER_DVM`, `CL_ABAP_BEHV_DETVAL`, `CL_SADL_GW_V4_DPC_ADAPTER`, `CL_SADL_GW_V4_GENERIC_DPC`) |
+| 2026-11-04 | 액션 파라미터 필수 처리 실측: flat vs deep parameter, `mandatory : execute`, Web API 응답 (04 문서) |

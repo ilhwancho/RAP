@@ -24,6 +24,10 @@ authorization master ( global )
   action ( features : instance ) rejectOrder result [1] $self;
   internal action recalcTotalAmount;
 
+  // 시험용: abstract BDEF field ( mandatory : execute ) 동작 확인 (flat vs deep)
+  static action testFlatParam parameter ZD_CIH_SOActParam;
+  static action testDeepParam deep parameter ZD_CIH_SOActParam;
+
   determination setSalesOrderID on save { create; }
   determination setInitialValues on modify { create; }
 
