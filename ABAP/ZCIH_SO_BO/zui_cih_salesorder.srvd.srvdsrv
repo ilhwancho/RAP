@@ -1,0 +1,5 @@
+@EndUserText.label: 'Sales Order (CIH) - UI Service'
+define service ZUI_CIH_SALESORDER {
+  expose ZC_CIH_SalesOrder     as SalesOrder;
+  expose ZC_CIH_SalesOrderItem as SalesOrderItem;
+}

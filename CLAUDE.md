@@ -25,5 +25,6 @@ RAP 런타임·EML·세이브 시퀀스·draft·OData/Gateway 요청 처리 등 
 - 모든 개발 객체는 `Z` 로 시작
 - 패키지: `ZCIH` 로 시작, 반드시 `ZLOCAL` 하위 (소프트웨어 컴포넌트 ZLOCAL, 이송 불필요)
 - Root CDS: `ZR_`, 인터페이스 뷰: `ZI_`, 일반 테이블: `ZAT`, 드래프트 테이블: `ZDT`
+- (사용자 미지정, 관례 사용) 프로젝션: `ZC_`, UI 서비스 정의: `ZUI_`, 바인딩: `ZUI_..._O4`
 - 사용자 SAP ID: `CB9980000051` (패키지/객체 responsible)
-- 예시 BO: `ABAP/ZCIH_SO_BO/` (패키지 `ZCIH_SO_BO`, 판매오더 헤더/아이템 managed + draft)
+- 예시 BO: `ABAP/ZCIH_SO_BO/` (패키지 `ZCIH_SO_BO`, 판매오더 헤더/아이템 managed + draft, 서비스 `ZUI_CIH_SALESORDER_O4`)

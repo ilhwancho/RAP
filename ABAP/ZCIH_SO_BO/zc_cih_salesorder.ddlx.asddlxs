@@ -1,0 +1,64 @@
+@Metadata.layer: #CORE
+@UI: {
+  headerInfo: { typeName: 'Sales Order',
+                typeNamePlural: 'Sales Orders',
+                title: { type: #STANDARD, value: 'SalesOrderID' },
+                description: { type: #STANDARD, value: 'Description' } },
+  presentationVariant: [{ sortOrder: [{ by: 'SalesOrderID', direction: #DESC }],
+                          visualizations: [{ type: #AS_LINEITEM }] }] }
+annotate entity ZC_CIH_SalesOrder with
+{
+  @UI.facet: [ { id: 'General', purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, label: 'General', position: 10 },
+               { id: 'Items',   purpose: #STANDARD, type: #LINEITEM_REFERENCE, label: 'Items', position: 20, targetElement: '_Item' } ]
+  @UI.hidden: true
+  SalesOrderUUID;
+
+  @UI: { lineItem:       [ { position: 10, importance: #HIGH },
+                           { type: #FOR_ACTION, dataAction: 'acceptOrder', label: 'Accept' },
+                           { type: #FOR_ACTION, dataAction: 'rejectOrder', label: 'Reject' } ],
+         identification: [ { position: 10 },
+                           { type: #FOR_ACTION, dataAction: 'acceptOrder', label: 'Accept' },
+                           { type: #FOR_ACTION, dataAction: 'rejectOrder', label: 'Reject' } ],
+         selectionField: [ { position: 10 } ] }
+  @EndUserText.label: 'Sales Order'
+  SalesOrderID;
+
+  @UI: { lineItem: [ { position: 20, importance: #HIGH } ], identification: [ { position: 20 } ], selectionField: [ { position: 20 } ] }
+  @EndUserText.label: 'Customer'
+  CustomerID;
+
+  @UI: { lineItem: [ { position: 30 } ], identification: [ { position: 30 } ] }
+  @EndUserText.label: 'Description'
+  Description;
+
+  @UI: { lineItem: [ { position: 40 } ], identification: [ { position: 40 } ], selectionField: [ { position: 30 } ] }
+  @EndUserText.label: 'Order Date'
+  OrderDate;
+
+  @UI: { lineItem: [ { position: 50 } ], identification: [ { position: 50 } ] }
+  @EndUserText.label: 'Delivery Date'
+  DeliveryDate;
+
+  @UI: { lineItem: [ { position: 60, importance: #HIGH } ], identification: [ { position: 60 } ], selectionField: [ { position: 40 } ] }
+  @EndUserText.label: 'Status'
+  OverallStatus;
+
+  @UI: { lineItem: [ { position: 70, importance: #HIGH } ], identification: [ { position: 70 } ] }
+  @EndUserText.label: 'Total Amount'
+  TotalAmount;
+
+  @UI: { identification: [ { position: 80 } ] }
+  @EndUserText.label: 'Currency'
+  CurrencyCode;
+
+  @UI.hidden: true
+  LocalCreatedBy;
+  @UI.hidden: true
+  LocalCreatedAt;
+  @UI.hidden: true
+  LocalLastChangedBy;
+  @UI.hidden: true
+  LocalLastChangedAt;
+  @UI.hidden: true
+  LastChangedAt;
+}
