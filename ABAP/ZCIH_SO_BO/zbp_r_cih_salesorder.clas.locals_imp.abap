@@ -143,7 +143,9 @@ CLASS lhc_salesorder IMPLEMENTATION.
       APPEND VALUE #( %cid = key-%cid
                       %msg = new_message_with_text(
                                severity = if_abap_behv_message=>severity-information
-                               text     = |deep: Quantity={ key-%param-Quantity } Remark={ key-%param-Remark }| ) )
+                               text     = |deep: Quantity={ key-%param-Quantity } Remark={ key-%param-Remark } | &&
+                                          |Items={ lines( key-%param-_Item ) } | &&
+                                          |Products={ REDUCE string( INIT s = `` FOR i IN key-%param-_Item NEXT s = s && i-ProductID && `;` ) }| ) )
              TO reported-salesorder.
     ENDLOOP.
   ENDMETHOD.

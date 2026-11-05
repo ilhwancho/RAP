@@ -2,8 +2,16 @@ abstract;
 strict ( 2 );
 with hierarchy;
 
-define behavior for ZD_CIH_SOActParam
+define behavior for ZD_CIH_SOActParam alias Header
 with control
 {
   field ( mandatory : execute ) Quantity;
+  association ( mandatory : execute ) _Item;
+}
+
+define behavior for ZD_CIH_SOActParamItem alias Item
+with control
+{
+  field ( mandatory : execute ) ProductID;
+  association _Header;
 }

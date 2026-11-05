@@ -58,9 +58,45 @@ flat `parameter` 로 쓰면 활성화 경고: *The "parameter" type of "X" is no
 - abstract BDEF 변경 후 이를 쓰는 BO/프로젝션 BDEF 도 재활성화해야 메타데이터에 반영.
 - Web API 바인딩 URL 은 `/srvd_a2x/` 경로.
 
+## 하위 엔티티(composition) 필수: `association ( mandatory : execute )` ✅ (2026-11-05 실측, V4 Web API)
+키워드 문서 `ABENBDL_ASSOCIATION_ABSTRACT`: composition·cross-BO association 에 가능, to-parent 불가. 전제 조건은 필드와 동일.
+```
+// CDS
+define root abstract entity ZD_CIH_SOActParam { ...  _Item : composition [0..*] of ZD_CIH_SOActParamItem; }
+define abstract entity ZD_CIH_SOActParamItem { ItemNo : abap.numc(6); ProductID : abap.char(40);
+                                               _Header : association to parent ZD_CIH_SOActParam; }
+// abstract BDEF
+define behavior for ZD_CIH_SOActParam alias Header with control
+{ field ( mandatory : execute ) Quantity;  association ( mandatory : execute ) _Item; }
+define behavior for ZD_CIH_SOActParamItem alias Item with control
+{ field ( mandatory : execute ) ProductID;  association _Header; }
+```
+`$metadata`: 액션 파라미터 `_Item` = `Collection(ZD_CIH_SOActParamItem)` + `FieldControl/Mandatory`,
+아이템 complex type 의 `ProductID` = `FieldControl/Mandatory`.
+
+| 요청 바디 (Quantity 는 포함) | 결과 |
+|---|---|
+| `_Item` 2건 (ProductID 포함) | 204 |
+| `_Item` 키 없음 | **400** `/IWCOR/CX_OD_EP_PARAM_ERROR` `No value for mandatory parameter '_Item'` |
+| `"_Item": []` | **204** (아이템 0건으로 전달) |
+| `"_Item": null` | 400 `Property '_Item' is invalid` |
+| 아이템에 ProductID 키 없음 / 2건 중 1건만 없음 / 빈 객체 `{}` | **400** `SADL_GW/053 ... Mandatory field PRODUCTID has not been provided` |
+| 아이템 `"ProductID": ""` | **204** |
+| 아이템 ItemNo 키 없음 | 204 |
+
+- association 필수도 **키 존재 여부만** 검사 → 빈 배열 `[]` 통과. "최소 1건" 은 액션 구현에서 `lines( key-%param-_Item ) = 0` 검사 필요.
+- 아이템 필드 필수 검사는 Gateway 가 아니라 **SADL 어댑터**(메시지 `SADL_GW/053`)가 수행, 아이템 하나라도 누락이면 400.
+
 ## 값 검증 예 (액션 구현)
 ```abap
 LOOP AT keys INTO DATA(key).
+  IF lines( key-%param-_Item ) = 0.          " 아이템 최소 1건 (빈 배열은 mandatory 를 통과함)
+    APPEND VALUE #( %cid = key-%cid ) TO failed-salesorder.
+    APPEND VALUE #( %cid = key-%cid
+                    %msg = new_message_with_text( severity = if_abap_behv_message=>severity-error
+                                                  text     = '아이템을 1건 이상 입력하세요.' ) )
+           TO reported-salesorder.
+  ENDIF.
   IF key-%param-Quantity <= 0.
     APPEND VALUE #( %cid = key-%cid ) TO failed-salesorder.
     APPEND VALUE #( %cid = key-%cid
@@ -72,6 +108,6 @@ ENDLOOP.
 ```
 
 ## 미확인 ⚠️
-- 문자 필드 `""` 통과 여부 (숫자 0 통과와 같은 원리로 추정, 미실측)
+- OData V2 바인딩에서의 동작 (V2 바인딩 `ZAPI_CIH_SALESORDER_O2` 생성·활성화까지만 함, 게시·시험 미완)
 - EML 에서 `%control` off 시 런타임 오류 (문서 기준, 미실측)
 - UI(Fiori) 액션 팝업의 필수 표시 동작

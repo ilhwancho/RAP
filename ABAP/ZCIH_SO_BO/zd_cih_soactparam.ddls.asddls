@@ -5,4 +5,5 @@ define root abstract entity ZD_CIH_SOActParam
   Quantity     : abap.quan(13,3);
   QuantityUnit : abap.unit(3);
   Remark       : abap.char(40);
+  _Item        : composition [0..*] of ZD_CIH_SOActParamItem;
 }
