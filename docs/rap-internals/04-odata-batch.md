@@ -55,3 +55,6 @@ lo_changeset_smsgs->handle_state_messages( ... )
 
 ## 메시지
 - 실패 시 `et_message` (transition), 성공 시 `SAP__Messages` 요청 엔티티에 state message 재조회 (`_postprocess_changeset`, `_upsert_elist_get_state_msgs`).
+
+## 액션 파라미터
+액션 파라미터 처리(필수 필드, flat vs deep)는 [06-action-parameters.md](06-action-parameters.md) 참조.

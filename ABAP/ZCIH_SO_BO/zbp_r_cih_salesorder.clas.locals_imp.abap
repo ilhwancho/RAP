@@ -23,6 +23,12 @@ CLASS lhc_salesorder DEFINITION INHERITING FROM cl_abap_behavior_handler.
     METHODS recalcTotalAmount FOR MODIFY
       IMPORTING keys FOR ACTION SalesOrder~recalcTotalAmount.
 
+    METHODS testFlatParam FOR MODIFY
+      IMPORTING keys FOR ACTION SalesOrder~testFlatParam.
+
+    METHODS testDeepParam FOR MODIFY
+      IMPORTING keys FOR ACTION SalesOrder~testDeepParam.
+
     METHODS setSalesOrderID FOR DETERMINE ON SAVE
       IMPORTING keys FOR SalesOrder~setSalesOrderID.
 
@@ -44,7 +50,9 @@ CLASS lhc_salesorder IMPLEMENTATION.
                       %delete             = if_abap_behv=>auth-allowed
                       %action-acceptOrder = if_abap_behv=>auth-allowed
                       %action-rejectOrder = if_abap_behv=>auth-allowed
-                      %action-Edit        = if_abap_behv=>auth-allowed ).
+                      %action-Edit        = if_abap_behv=>auth-allowed
+                      %action-testFlatParam = if_abap_behv=>auth-allowed
+                      %action-testDeepParam = if_abap_behv=>auth-allowed ).
   ENDMETHOD.
 
   METHOD get_instance_features.
@@ -117,6 +125,27 @@ CLASS lhc_salesorder IMPLEMENTATION.
       ENTITY SalesOrder
         UPDATE FIELDS ( TotalAmount )
         WITH CORRESPONDING #( orders ).
+  ENDMETHOD.
+
+  METHOD testFlatParam.
+    " 시험용: 받은 파라미터를 메시지로 돌려준다
+    LOOP AT keys INTO DATA(key).
+      APPEND VALUE #( %cid = key-%cid
+                      %msg = new_message_with_text(
+                               severity = if_abap_behv_message=>severity-information
+                               text     = |flat: Quantity={ key-%param-Quantity } Remark={ key-%param-Remark }| ) )
+             TO reported-salesorder.
+    ENDLOOP.
+  ENDMETHOD.
+
+  METHOD testDeepParam.
+    LOOP AT keys INTO DATA(key).
+      APPEND VALUE #( %cid = key-%cid
+                      %msg = new_message_with_text(
+                               severity = if_abap_behv_message=>severity-information
+                               text     = |deep: Quantity={ key-%param-Quantity } Remark={ key-%param-Remark }| ) )
+             TO reported-salesorder.
+    ENDLOOP.
   ENDMETHOD.
 
   METHOD setSalesOrderID.
