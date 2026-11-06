@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- BAS 생성 annotation.xml 에 아래 <Annotations> 블록만 추가.
+     Namespace / EntityType 이름은 $metadata 로 확인할 것 -->
+<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+  <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+    <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="/sap/opu/odata4/sap/zui_cih_if_o4/srvd/sap/zui_cih_if/0001/$metadata">
+    <edmx:Include Namespace="com.sap.gateway.srvd.zui_cih_if.v0001"/>
+  </edmx:Reference>
+  <edmx:DataServices>
+    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="local">
+      <!-- 실행 전 확인 팝업 -->
+      <Annotations Target="com.sap.gateway.srvd.zui_cih_if.v0001.receiveInterface(com.sap.gateway.srvd.zui_cih_if.v0001.IfInfoType)">
+        <Annotation Term="Common.IsActionCritical" Bool="true"/>
+      </Annotations>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>

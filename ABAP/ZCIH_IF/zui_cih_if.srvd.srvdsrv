@@ -1,0 +1,5 @@
+@EndUserText.label: '인터페이스 수신 UI 서비스'
+define service ZUI_CIH_IF {
+  expose ZR_CIH_IF_INFO   as IfInfo;
+  expose ZR_CIH_IF_TARGET as IfTarget;
+}

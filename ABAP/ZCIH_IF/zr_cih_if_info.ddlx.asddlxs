@@ -1,0 +1,60 @@
+@Metadata.layer: #CUSTOMER
+@UI.headerInfo: {
+  typeName: '인터페이스', typeNamePlural: '인터페이스',
+  title:       { type: #STANDARD, value: 'IfName' },
+  description: { type: #STANDARD, value: 'IfId' }
+}
+annotate entity ZR_CIH_IF_INFO with
+{
+  @UI.facet: [
+    /* 헤더 */
+    { id: 'HdrInfo',   purpose: #HEADER, type: #FIELDGROUP_REFERENCE, targetQualifier: 'HdrInfo', label: '인터페이스 정보', position: 10 },
+    { id: 'HdrComm',   purpose: #HEADER, type: #FIELDGROUP_REFERENCE, targetQualifier: 'HdrComm', label: '송수신',         position: 20 },
+    { id: 'HdrCount',  purpose: #HEADER, type: #DATAPOINT_REFERENCE,  targetQualifier: 'TargetCount',                     position: 30 },
+    { id: 'HdrVolume', purpose: #HEADER, type: #DATAPOINT_REFERENCE,  targetQualifier: 'ExpectedVolume',                  position: 40 },
+    /* 본문 섹션 (안내 섹션은 앱 manifest 의 custom section) */
+    { id: 'Overview',  purpose: #STANDARD, type: #FIELDGROUP_REFERENCE, targetQualifier: 'Overview', label: '인터페이스 개요',   position: 20 },
+    { id: 'Targets',   purpose: #STANDARD, type: #LINEITEM_REFERENCE,   targetElement: '_Target',    label: '수신 대상 테이블', position: 30 }
+  ]
+
+  /* 하단 footer 버튼: determining action */
+  @UI.identification: [{ type: #FOR_ACTION, dataAction: 'receiveInterface',
+                         label: '인터페이스 수신 실행', determining: true, position: 10 }]
+  IfId;
+
+  @UI.fieldGroup: [{ qualifier: 'Overview', position: 10 }]
+  IfName;
+
+  @UI.fieldGroup: [{ qualifier: 'HdrInfo', position: 10 }]
+  Direction;
+
+  @UI.fieldGroup: [{ qualifier: 'HdrInfo', position: 20 }]
+  ProcMode;
+
+  @UI.fieldGroup: [{ qualifier: 'HdrInfo', position: 30 }]
+  TriggerMode;
+
+  @UI.fieldGroup: [{ qualifier: 'HdrComm',  position: 10 },
+                   { qualifier: 'Overview', position: 20 }]
+  SenderSystem;
+
+  @UI.fieldGroup: [{ qualifier: 'HdrComm',  position: 20 },
+                   { qualifier: 'Overview', position: 30 }]
+  ReceiveService;
+
+  @UI.dataPoint: { qualifier: 'TargetCount', title: '대상 테이블' }
+  TargetCount;
+
+  @UI.dataPoint: { qualifier: 'ExpectedVolume', title: '예상 처리량 (건/회)' }
+  @UI.fieldGroup: [{ qualifier: 'Overview', position: 40 }]
+  ExpectedVolume;
+
+  @UI.fieldGroup: [{ qualifier: 'Overview', position: 50 }]
+  Owner;
+
+  @UI.fieldGroup: [{ qualifier: 'Overview', position: 60 }]
+  ProcDetail;
+
+  @UI.hidden: true
+  _Target;
+}

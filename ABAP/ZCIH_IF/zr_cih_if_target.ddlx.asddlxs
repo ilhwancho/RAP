@@ -1,0 +1,22 @@
+@Metadata.layer: #CUSTOMER
+@UI.headerInfo: {
+  typeName: '수신 대상 테이블', typeNamePlural: '수신 대상 테이블',
+  title: { type: #STANDARD, value: 'TableName' }
+}
+annotate entity ZR_CIH_IF_TARGET with
+{
+  @UI.hidden: true
+  IfId;
+
+  @UI.lineItem: [{ position: 10 }]
+  TableName;
+
+  @UI.lineItem: [{ position: 20 }]
+  Description;
+
+  @UI.lineItem: [{ position: 30 }]
+  UpdateMethod;
+
+  @UI.lineItem: [{ position: 40 }]
+  KeyFields;
+}

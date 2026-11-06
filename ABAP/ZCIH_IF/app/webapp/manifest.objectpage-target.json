@@ -1,0 +1,25 @@
+{
+  "_comment": "BAS 생성 manifest.json 의 sap.ui5.routing.targets.IfInfoObjectPage 를 아래로 교체 (발췌)",
+  "IfInfoObjectPage": {
+    "type": "Component",
+    "id": "IfInfoObjectPage",
+    "name": "sap.fe.templates.ObjectPage",
+    "options": {
+      "settings": {
+        "contextPath": "/IfInfo",
+        "navigation": {},
+        "content": {
+          "body": {
+            "sections": {
+              "Guide": {
+                "template": "zcih.ifinfo.ext.fragment.Guide",
+                "title": "안내",
+                "position": { "placement": "Before", "anchor": "Overview" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

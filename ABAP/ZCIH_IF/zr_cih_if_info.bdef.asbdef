@@ -1,0 +1,18 @@
+unmanaged implementation in class zbp_r_cih_if_info unique;
+strict ( 2 );
+
+define behavior for ZR_CIH_IF_INFO alias IfInfo
+lock master
+authorization master ( global )
+{
+  action receiveInterface;
+  association _Target;
+}
+
+define behavior for ZR_CIH_IF_TARGET alias IfTarget
+lock dependent by _Info
+authorization dependent by _Info
+{
+  field ( readonly ) IfId, TableName;
+  association _Info;
+}
