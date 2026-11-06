@@ -20,14 +20,19 @@ annotate entity ZR_CIH_IF_INFO with
   /* 하단 footer 버튼: determining action */
   @UI.identification: [{ type: #FOR_ACTION, dataAction: 'receiveInterface',
                          label: '인터페이스 수신 실행', determining: true, position: 10 }]
+  /* List Report 테이블: @UI.lineItem 이 없으면 기본 테이블로 그려지고 행 네비게이션(>)이 생기지 않음 */
+  @UI.lineItem: [{ position: 10 }]
   IfId;
 
+  @UI.lineItem: [{ position: 20 }]
   @UI.fieldGroup: [{ qualifier: 'Overview', position: 10 }]
   IfName;
 
+  @UI.lineItem: [{ position: 30 }]
   @UI.fieldGroup: [{ qualifier: 'HdrInfo', position: 10 }]
   Direction;
 
+  @UI.lineItem: [{ position: 40 }]
   @UI.fieldGroup: [{ qualifier: 'HdrInfo', position: 20 }]
   ProcMode;
 
