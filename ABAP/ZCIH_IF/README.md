@@ -35,10 +35,12 @@ Fiori Elements V4 (List Report + Object Page, 앱 ID `zcih.ifinfo`). BAS 로 생
 - `i18n/i18n.properties`: 앱 제목 등
 - `annotations/annotation.xml`: IsActionCritical
 - `ext/fragment/Guide.fragment.xml`: 안내 섹션
-- `Component.js`: 시작 시 Object Page 로 바로 진입
+- Object Page 바로 진입
+  - 런치패드: `manifest.json` inbound 의 파라미터 `IfId` 기본값(`IF_CBO_001`) → 시작 파라미터로 키가 전달되면 Fiori Elements 가 Object Page 를 바로 연다 (커스텀 코드 없음)
+  - `Component.js`: 런치패드 밖(로컬 `npm start`) 테스트용 보조. 런치패드만 쓸 거면 삭제 가능
 
 ## 확인 필요 (⚠️)
 1. custom entity 에 대한 메타데이터 확장 / composition 탐색 시 child query 호출 / strict(2) unmanaged 필수 메서드
 2. `IsActionCritical` 팝업 문구는 SAP 표준 (변경은 controller extension 필요)
-3. `Component.js` 해시 교체 방식이 FLP 안에서 동작하는지
+3. 런치패드 시작 파라미터(`IfId`)로 Object Page 가 바로 열리는지 (S/4 Cloud 에서 manifest inbound 가 Target Mapping 으로 반영되는지 포함)
 4. 액션의 EAI 호출부는 TODO (Communication Scenario/Arrangement 구성 후 구현)

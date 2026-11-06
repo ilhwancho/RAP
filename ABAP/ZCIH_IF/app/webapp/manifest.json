@@ -4,7 +4,9 @@
     "id": "zcih.ifinfo",
     "type": "application",
     "i18n": "i18n/i18n.properties",
-    "applicationVersion": { "version": "0.0.1" },
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
     "title": "{{appTitle}}",
     "description": "{{appDescription}}",
     "resources": "resources.json",
@@ -17,7 +19,9 @@
         "uri": "/sap/opu/odata4/sap/zui_cih_if_o4/srvd/sap/zui_cih_if/0001/",
         "type": "OData",
         "settings": {
-          "annotations": ["annotation"],
+          "annotations": [
+            "annotation"
+          ],
           "odataVersion": "4.0"
         }
       },
@@ -37,7 +41,15 @@
           "title": "{{flpTitle}}",
           "subTitle": "{{flpSubtitle}}",
           "signature": {
-            "parameters": {},
+            "parameters": {
+              "IfId": {
+                "defaultValue": {
+                  "value": "IF_CBO_001",
+                  "format": "plain"
+                },
+                "required": false
+              }
+            },
             "additionalParameters": "allowed"
           }
         }
@@ -46,8 +58,14 @@
   },
   "sap.ui": {
     "technology": "UI5",
-    "icons": { "icon": "sap-icon://download" },
-    "deviceTypes": { "desktop": true, "tablet": true, "phone": true }
+    "icons": {
+      "icon": "sap-icon://download"
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
   },
   "sap.ui5": {
     "flexEnabled": true,
@@ -59,11 +77,16 @@
         "sap.fe.templates": {}
       }
     },
-    "contentDensities": { "compact": true, "cozy": true },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
     "models": {
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
-        "settings": { "bundleName": "zcih.ifinfo.i18n.i18n" }
+        "settings": {
+          "bundleName": "zcih.ifinfo.i18n.i18n"
+        }
       },
       "": {
         "dataSource": "mainService",
@@ -79,7 +102,9 @@
         "uri": "i18n/i18n.properties"
       }
     },
-    "resources": { "css": [] },
+    "resources": {
+      "css": []
+    },
     "routing": {
       "config": {},
       "routes": [
@@ -106,7 +131,9 @@
               "initialLoad": "Enabled",
               "navigation": {
                 "IfInfo": {
-                  "detail": { "route": "IfInfoObjectPage" }
+                  "detail": {
+                    "route": "IfInfoObjectPage"
+                  }
                 }
               }
             }
