@@ -29,11 +29,12 @@ Fiori Object Page 에서 [인터페이스 수신 실행] 버튼 → RAP 액션 �
 | 안내 3줄 | `app/webapp/ext/fragment/Guide.fragment.xml` (custom section) |
 | 결과 | 성공: `reported-%other` success → 토스트 / 실패: `failed` + error → 팝업 |
 
-## 앱 (`app/webapp/`, 참고용 발췌)
-BAS *List Report Page* 템플릿으로 `ZUI_CIH_IF_O4` 연결해 생성 (child Object Page 는 생성하지 않음) 후:
-- `annotations/annotation.xml`: IsActionCritical 블록 추가
+## 앱 (`app/webapp/`)
+Fiori Elements V4 (List Report + Object Page, 앱 ID `zcih.ifinfo`). BAS 로 생성한 프로젝트의 `webapp/` 에 덮어쓰면 됨.
+- `manifest.json`: dataSource(`ZUI_CIH_IF_O4`), FLP inbound(`ZCIH_IfReceive-display`), routing(LR/OP), OP 설정(안내 custom section, 대상 테이블 설정, 하위 네비게이션 없음)
+- `i18n/i18n.properties`: 앱 제목 등
+- `annotations/annotation.xml`: IsActionCritical
 - `ext/fragment/Guide.fragment.xml`: 안내 섹션
-- `manifest.objectpage-target.json`: manifest 의 Object Page target 설정 발췌
 - `Component.js`: 시작 시 Object Page 로 바로 진입
 
 ## 확인 필요 (⚠️)
