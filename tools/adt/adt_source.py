@@ -67,7 +67,7 @@ def get(name, typ=None, refresh=False):
     parts = [("main", "/source/main")]
     if typ == "clas":
         parts += [("locals_imp", "/includes/implementations"), ("locals_def", "/includes/definitions"),
-                  ("macros", "/includes/macros")]
+                  ("macros", "/includes/macros"), ("testclasses", "/includes/testclasses")]
     files = []
     for part, sub in parts:
         fn = local_name(name, part)
