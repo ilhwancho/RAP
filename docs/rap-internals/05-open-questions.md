@@ -4,7 +4,8 @@
 
 ## 미확인 (⚠️)
 - [ ] managed BO 의 on-modify determination 호출점 (CSP 버퍼 쪽). 후보: `CL_CSP_BEHV_INTERACT_HANDLER`, `CL_CSP_BEHV_A_INTERACT_HANDLER`, `CL_ABAP_BEHV_HANDLER_MNGD_CSP`
-- [ ] draft `Prepare` / `Activate` 내부 흐름: `exec_determine_action` 호출점, draft → active 복사, `CL_DSP_BEHV_HANDLER_MANAGED`, `CL_CSP_BEHV_DRAFT_SERVICES`
+- [ ] draft `Activate` 내부 흐름: draft → active 복사, `CL_DSP_BEHV_HANDLER_MANAGED`, `CL_CSP_BEHV_DRAFT_SERVICES` (Prepare 는 08 문서), Prepare 를 OData 에서 호출하는 진입점(`exec_determine_action` 호출자)
+- [ ] Prepare 에 지정 안 한 validation 이 Activate 때 도는지, `draftfieldchanges` 초기화 시점 (08 ⚠️)
 - [ ] lock / etag 처리: `cl_rap_bhv_concurrency_control`, `CL_RAP_BHV_LOCK_CC`, `CL_RAP_BHV_DRAFT_ETAG`, total etag
 - [ ] late numbering 상세: `adjust_numbers` 와 preliminary key (`cl_rap_bhv_prelim_key_registry`, `get_preliminary_key_converter`)
 - [ ] feature control / instance features 호출 시점: `if_rap_eml_processor~feature_check`, `CL_RAP_BHV_FEATURE_CONTROL`
