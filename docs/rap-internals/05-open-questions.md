@@ -14,6 +14,8 @@
 - [ ] 외부 `COMMIT WORK` 경로의 cleanup 호출 시점 (`CL_ABAP_BEHV_TRANSACTION_CTRL=>CALL_CLEANUP`)
 - [ ] 한 `$batch` 의 여러 changeset 이 같은 ABAP 세션인지 (static/class-data 공유 여부)
 - [ ] 이벤트 (`raise entity event`, `CL_ABAP_BEHV_EVENTS`) 발행 시점
+- [ ] `reported` 메시지에 lifetime=transition 이 붙는 지점, state 메시지 저장(`CL_RAP_STATE_MESSAGE_HANDLER`) 조건 (07 문서 ⚠️)
+- [ ] 헤더 메시지를 실제 HTTP 요청으로 확인 (예시 BO 서비스에 success 메시지를 넣고 `sap-messages` 헤더 관찰)
 
 ## 소스로 확인 불가
 - Gateway `/IWBEP/*` (ADT 404): batch 분해, changeset 경계, HTTP 응답 조립
