@@ -88,6 +88,13 @@ CLASS lhc_salesorder IMPLEMENTATION.
       RESULT DATA(orders).
 
     result = VALUE #( FOR order IN orders ( %tky = order-%tky %param = order ) ).
+
+    " 시험용: 인스턴스에 묶인 transition 메시지 (OData 메시지 경로 확인, docs/rap-internals/07)
+    reported-salesorder = VALUE #( FOR order IN orders
+                                   ( %tky = order-%tky
+                                     %msg = new_message_with_text(
+                                              severity = if_abap_behv_message=>severity-success
+                                              text     = |Order { order-SalesOrderID } accepted| ) ) ).
   ENDMETHOD.
 
   METHOD rejectOrder.
