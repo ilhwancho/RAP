@@ -33,6 +33,10 @@
 네임스페이스: blue `http://www.sap.com/wbobj/blue`, ddl `http://www.sap.com/adt/ddic/ddlsources`, class `http://www.sap.com/adt/oo/classes`.
 
 ## 2. 소스 쓰기
+> ⚠️ **PUT 전에 시스템의 현재 소스(active/inactive)를 받아 레포 파일과 비교한다.** 다른 세션이 시스템에서 직접 고친 내용이 레포에 아직 없을 수 있고, PUT 은 include 전체를 덮어쓴다.
+> (2026-11-09: 다른 세션이 추가한 `FRIENDS ltc_accept_order`·신용한도 체크를 덮어써 활성화 오류 → active 버전을 다시 PUT 해 복구)
+> 조회: `GET {objuri}/includes/implementations?version=active` (또는 `inactive`, 클래스 main 은 `/source/main`).
+
 1. `POST {objuri}?_action=LOCK&accessMode=MODIFY` (Accept `application/*,application/vnd.sap.as+xml;charset=UTF-8;dataname=com.sap.adt.lock.result`) → `<LOCK_HANDLE>`
 2. `PUT {objuri}/source/main?lockHandle=...` (`text/plain; charset=utf-8`)
    - 클래스 로컬 타입(행위 풀 lhc_ 등): `{objuri}/includes/implementations`

@@ -1,4 +1,4 @@
-# 08. draft 에서 validation 이 도는 시점과 Prepare
+# 09. draft 에서 validation 이 도는 시점과 Prepare
 
 질문: draft PATCH 때는 왜 validation 이 안 도나? Prepare 는 정확히 무엇인가?
 분석: 2026-11-09, `CL_ABAP_BEHV_SAVER_MNGD_DSP`, `CL_ABAP_BEHV_SAVER_DVM`, `CL_DSP_PRC_BEHV_CHECK_SAVE`, `CL_ABAP_BEHV_DETVAL`(로컬 구현), `CL_CSP_DVM_CTRL_FLAG_READER`, `CL_CSP_UTL_DFIELDCHANGES_CONV`.
@@ -46,7 +46,7 @@ OverallStatus 가 생성 직후 01 인 것은 on modify determination `setInitia
   3. 지정된 **determination** 을 버퍼 변화가 없을 때까지 반복 실행 (on save determination 과 같은 루프, 횟수 초과 시 `endless_on_save` 덤프). 그 사이 draft 변경을 `flush_pending_operations` 로 draft 테이블에 반영.
   4. 지정된 **validation** 을 실행. 대상은 `get_instances_filtered( last_t = 0, has_draft = X )` → 2절의 저장된 변경 이력까지 포함해 **트리거 조건(create, field …)을 만족한 인스턴스만**.
   5. `optimized` (Activate optimized) 면 `detact_buffer` 에 실행 기록 → Activate 안의 암시적 Prepare 에서 같은 인스턴스 재실행 생략.
-- failed 는 Prepare 전용 로그(`cl_dsp_utl_behv_log_factory=>get( )->get_behv_prepare_log( )`)로 모음. 실측상 OData 응답은 validation 이 실패해도 204, 메시지는 state 메시지로 저장 (07 문서).
+- failed 는 Prepare 전용 로그(`cl_dsp_utl_behv_log_factory=>get( )->get_behv_prepare_log( )`)로 모음. 실측상 OData 응답은 validation 이 실패해도 204, 메시지는 state 메시지로 저장 (08 문서).
 - Activate 는 Prepare 를 암시적으로 포함 (키워드 문서). Fiori 의 저장 버튼 = Activate.
 
 ## 4. 정리

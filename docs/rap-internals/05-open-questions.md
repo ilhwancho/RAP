@@ -4,8 +4,8 @@
 
 ## 미확인 (⚠️)
 - [ ] managed BO 의 on-modify determination 호출점 (CSP 버퍼 쪽). 후보: `CL_CSP_BEHV_INTERACT_HANDLER`, `CL_CSP_BEHV_A_INTERACT_HANDLER`, `CL_ABAP_BEHV_HANDLER_MNGD_CSP`
-- [ ] draft `Activate` 내부 흐름: draft → active 복사, `CL_DSP_BEHV_HANDLER_MANAGED`, `CL_CSP_BEHV_DRAFT_SERVICES` (Prepare 는 08 문서), Prepare 를 OData 에서 호출하는 진입점(`exec_determine_action` 호출자)
-- [ ] Prepare 에 지정 안 한 validation 이 Activate 때 도는지, `draftfieldchanges` 초기화 시점 (08 ⚠️)
+- [ ] draft `Activate` 내부 흐름: draft → active 복사, `CL_DSP_BEHV_HANDLER_MANAGED`, `CL_CSP_BEHV_DRAFT_SERVICES` (Prepare 는 09 문서), Prepare 를 OData 에서 호출하는 진입점(`exec_determine_action` 호출자)
+- [ ] Prepare 에 지정 안 한 validation 이 Activate 때 도는지, `draftfieldchanges` 초기화 시점 (09 ⚠️)
 - [ ] lock / etag 처리: `cl_rap_bhv_concurrency_control`, `CL_RAP_BHV_LOCK_CC`, `CL_RAP_BHV_DRAFT_ETAG`, total etag
 - [ ] late numbering 상세: `adjust_numbers` 와 preliminary key (`cl_rap_bhv_prelim_key_registry`, `get_preliminary_key_converter`)
 - [ ] feature control / instance features 호출 시점: `if_rap_eml_processor~feature_check`, `CL_RAP_BHV_FEATURE_CONTROL`
@@ -15,8 +15,8 @@
 - [ ] 외부 `COMMIT WORK` 경로의 cleanup 호출 시점 (`CL_ABAP_BEHV_TRANSACTION_CTRL=>CALL_CLEANUP`)
 - [ ] 한 `$batch` 의 여러 changeset 이 같은 ABAP 세션인지 (static/class-data 공유 여부)
 - [ ] 이벤트 (`raise entity event`, `CL_ABAP_BEHV_EVENTS`) 발행 시점
-- [ ] `reported` 메시지에 lifetime=transition 이 붙는 지점, state 메시지 저장(`CL_RAP_STATE_MESSAGE_HANDLER`) 조건 (07 문서 ⚠️)
-- [ ] `sap-messages: transientOnly` 요청 헤더/쿼리의 용도 (07 실측에서 효과 없음)
+- [ ] `reported` 메시지에 lifetime=transition 이 붙는 지점, state 메시지 저장(`CL_RAP_STATE_MESSAGE_HANDLER`) 조건 (08 문서 ⚠️)
+- [ ] `sap-messages: transientOnly` 요청 헤더/쿼리의 용도 (08 실측에서 효과 없음)
 
 ## 소스로 확인 불가
 - Gateway `/IWBEP/*` (ADT 404): batch 분해, changeset 경계, HTTP 응답 조립

@@ -17,8 +17,8 @@ RAP 런타임(EML, 트랜잭션, 세이브 시퀀스)과 OData/Gateway 요청 �
 | [05-open-questions.md](05-open-questions.md) | 미분석 주제, 읽을 수 없는 소스 | 다음에 무엇을 더 파야 하나 |
 | [06-action-parameters.md](06-action-parameters.md) | 액션 파라미터 (abstract entity/BDEF, flat vs deep, 필수 처리) | 파라미터 필드를 필수로 만들 수 있나, OData 에서 어떻게 검사되나 |
 | [07-unit-testing.md](07-unit-testing.md) | RAP BO 유닛 테스트 (ABAP Unit, test double, handler 단위 vs EML 통합) | BO 테스트 클래스를 어디에 어떻게 만드나, 키워드 문서는 뭐라 하나 |
-| [07-odata-messages.md](07-odata-messages.md) | 성공 응답의 메시지 (`sap-messages` 헤더 vs `SAP__Messages`, state/transition) | `reported` 메시지가 응답의 어디로 가나 |
-| [08-draft-validation-prepare.md](08-draft-validation-prepare.md) | draft 에서 validation 시점, Prepare 내부, `draftfieldchanges` | draft PATCH 때 validation 이 왜 안 도나, Prepare 는 무엇인가 |
+| [08-odata-messages.md](08-odata-messages.md) | 성공 응답의 메시지 (`sap-messages` 헤더 vs `SAP__Messages`, state/transition) | `reported` 메시지가 응답의 어디로 가나 |
+| [09-draft-validation-prepare.md](09-draft-validation-prepare.md) | draft 에서 validation 시점, Prepare 내부, `draftfieldchanges` | draft PATCH 때 validation 이 왜 안 도나, Prepare 는 무엇인가 |
 
 ## 표기 규칙
 
@@ -44,6 +44,6 @@ RAP 런타임(EML, 트랜잭션, 세이브 시퀀스)과 OData/Gateway 요청 �
 | 2026-11-04 | 세이버 수집 조건(acc_modify), managed `save_modified` 빈 변경 시 호출, rollback/discard 시 cleanup 경로, 앱 class-data 수명 (`GROUP_BEHV_BY_CLSS`, `COLLECT_SAVERS`, `CL_ABAP_BEHV_SAVER_MNGD_CSP`, `_discard_changes`, `EXECUTE_ROLLBACK`) |
 | 2026-11-04 | 액션 파라미터 필수 처리 실측 (flat vs deep, `mandatory : execute`, 대조 시험, Web API 응답) → 06 문서로 분리 |
 | 2026-11-09 | RAP BO 유닛 테스트 정리 → 07 문서 (키워드 문서 `ABAPCREATE_OBJECT_FOR_TESTING`·`ABAPCLASS_FOR_TESTING`·`ABENTEST_RELATIONS`, `BP_DEMO_MANAGED_ROOT_2`·`CL_SD_BEHV_SALESORDER` test include) |
-| 2026-11-09 | OData V4 성공 응답 메시지 경로: `SAP__Messages` 요청 여부, state/transition, 헤더 메시지 (`CL_SADL_GW_V4_DPC_ADAPTER`, `CL_SADL_GW_V4_GENERIC_DPC`, `CL_RAP_RT_MESSAGE_HANDLER`) → 07 문서 |
-| 2026-11-09 | 07 HTTP 실측: 헤더 `Sap-Messages` vs 본문 `SAP__Messages`(이동), state 메시지 동작, `sap-messages=transientOnly` 무효과 (`acceptOrder` 에 시험용 success 메시지 추가) |
-| 2026-11-09 | draft 세이버(`CL_ABAP_BEHV_SAVER_MNGD_DSP`)는 DVM 미상속 → PATCH 시 on save validation 미실행, 트리거는 `draftfieldchanges` 에 저장, Prepare(`exec_determine_action is_draft`) 내부 → 08 문서 |
+| 2026-11-09 | OData V4 성공 응답 메시지 경로: `SAP__Messages` 요청 여부, state/transition, 헤더 메시지 (`CL_SADL_GW_V4_DPC_ADAPTER`, `CL_SADL_GW_V4_GENERIC_DPC`, `CL_RAP_RT_MESSAGE_HANDLER`) → 08 문서 |
+| 2026-11-09 | 08 HTTP 실측: 헤더 `Sap-Messages` vs 본문 `SAP__Messages`(이동), state 메시지 동작, `sap-messages=transientOnly` 무효과 (`acceptOrder` 에 시험용 success 메시지 추가) |
+| 2026-11-09 | draft 세이버(`CL_ABAP_BEHV_SAVER_MNGD_DSP`)는 DVM 미상속 → PATCH 시 on save validation 미실행, 트리거는 `draftfieldchanges` 에 저장, Prepare(`exec_determine_action is_draft`) 내부 → 09 문서 |

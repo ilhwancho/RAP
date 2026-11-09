@@ -1,7 +1,9 @@
-# 07. OData V4 응답 메시지 (`sap-messages` 헤더 vs `SAP__Messages`)
+# 08. OData V4 응답 메시지 (`sap-messages` 헤더 vs `SAP__Messages`)
 
 성공한 요청에서 RAP 메시지(`reported`)가 OData 응답의 어디로 가는지.
 분석: 2026-11-09, `CL_SADL_GW_V4_DPC_ADAPTER`, `CL_SADL_GW_V4_GENERIC_DPC`, `CL_RAP_RT_MESSAGE_HANDLER`.
+
+> 문서 번호 변경: 처음에는 07 로 작성했다가 `07-unit-testing.md` 와 겹쳐 08 로 옮김. 시스템의 `acceptOrder` 주석 `docs/rap-internals/07` 은 이 문서를 가리킨다.
 
 ## 요약
 | 메시지 종류 | `$select` 에 `SAP__Messages` 있음 | 없음 |
