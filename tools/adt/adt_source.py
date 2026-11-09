@@ -144,7 +144,8 @@ def docu(query=None, obj=None, kind="abap", version="cloud"):
     r = _get(path, accept=DOCU_ACCEPT, **params)
     t = r.content.decode("utf-8", "replace")
     links = []
-    for oid, title in re.findall(r'href="adtcom:[^"]*object=([A-Z0-9_]+)[^"]*"[^>]*>(.*?)</a>', t, re.S):
+    for oid, title in re.findall(r'href="adtcom:[^"]*object=([A-Za-z0-9_]+)[^"]*"[^>]*>(.*?)</a>', t, re.S):
+        oid = oid.upper()
         title = html.unescape(re.sub(r"<[^>]+>", "", title)).strip()
         if (oid, title) not in links:
             links.append((oid, title))
