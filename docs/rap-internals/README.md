@@ -47,3 +47,4 @@ RAP 런타임(EML, 트랜잭션, 세이브 시퀀스)과 OData/Gateway 요청 �
 | 2026-11-09 | OData V4 성공 응답 메시지 경로: `SAP__Messages` 요청 여부, state/transition, 헤더 메시지 (`CL_SADL_GW_V4_DPC_ADAPTER`, `CL_SADL_GW_V4_GENERIC_DPC`, `CL_RAP_RT_MESSAGE_HANDLER`) → 08 문서 |
 | 2026-11-09 | 08 HTTP 실측: 헤더 `Sap-Messages` vs 본문 `SAP__Messages`(이동), state 메시지 동작, `sap-messages=transientOnly` 무효과 (`acceptOrder` 에 시험용 success 메시지 추가) |
 | 2026-11-09 | draft 세이버(`CL_ABAP_BEHV_SAVER_MNGD_DSP`)는 DVM 미상속 → PATCH 시 on save validation 미실행, 트리거는 `draftfieldchanges` 에 저장, Prepare(`exec_determine_action is_draft`) 내부 → 09 문서 |
+| 2026-11-09 | 07: 방식 A / A' / fixture 4개를 ZCIH_SO_BO 에 적용해 실측 (13 테스트 PASS), 확인된 사실·전체 코드 수록 |

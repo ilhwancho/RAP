@@ -1,4 +1,6 @@
-CLASS lhc_salesorder DEFINITION INHERITING FROM cl_abap_behavior_handler.
+CLASS ltc_accept_order DEFINITION DEFERRED FOR TESTING.
+
+CLASS lhc_salesorder DEFINITION INHERITING FROM cl_abap_behavior_handler FRIENDS ltc_accept_order.
   PRIVATE SECTION.
     CONSTANTS:
       BEGIN OF c_status,
@@ -77,24 +79,50 @@ CLASS lhc_salesorder IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD acceptOrder.
+    READ ENTITIES OF zr_cih_salesorder IN LOCAL MODE
+      ENTITY SalesOrder
+        FIELDS ( CustomerID TotalAmount CurrencyCode ) WITH CORRESPONDING #( keys )
+      RESULT DATA(orders_in).
+
+    " 신용한도 체크는 별도 클래스에 위임 (zcl_cih_credit_check)
+    DATA(lo_credit) = zcl_cih_credit_check=>create( ).
+    DATA lt_update TYPE TABLE FOR UPDATE zr_cih_salesorder\\SalesOrder.
+
+    LOOP AT orders_in INTO DATA(order_in).
+      TRY.
+          lo_credit->check( iv_customer = order_in-CustomerID
+                            iv_amount   = order_in-TotalAmount
+                            iv_currency = order_in-CurrencyCode ).
+          APPEND VALUE #( %tky = order_in-%tky OverallStatus = c_status-accepted ) TO lt_update.
+        CATCH zcx_cih_credit INTO DATA(lx_credit).            " 한도 초과 / 미등록 고객
+          APPEND VALUE #( %tky = order_in-%tky ) TO failed-salesorder.
+          APPEND VALUE #( %tky = order_in-%tky
+                          %msg = new_message_with_text( severity = if_abap_behv_message=>severity-error
+                                                        text     = lx_credit->get_text( ) ) )
+                 TO reported-salesorder.
+      ENDTRY.
+    ENDLOOP.
+
+    CHECK lt_update IS NOT INITIAL.
+
     MODIFY ENTITIES OF zr_cih_salesorder IN LOCAL MODE
       ENTITY SalesOrder
-        UPDATE FIELDS ( OverallStatus )
-        WITH VALUE #( FOR key IN keys ( %tky = key-%tky OverallStatus = c_status-accepted ) ).
+        UPDATE FIELDS ( OverallStatus ) WITH lt_update.
 
     READ ENTITIES OF zr_cih_salesorder IN LOCAL MODE
       ENTITY SalesOrder
-        ALL FIELDS WITH CORRESPONDING #( keys )
+        ALL FIELDS WITH CORRESPONDING #( lt_update )
       RESULT DATA(orders).
 
     result = VALUE #( FOR order IN orders ( %tky = order-%tky %param = order ) ).
 
     " 시험용: 인스턴스에 묶인 transition 메시지 (OData 메시지 경로 확인, docs/rap-internals/07)
-    reported-salesorder = VALUE #( FOR order IN orders
-                                   ( %tky = order-%tky
-                                     %msg = new_message_with_text(
-                                              severity = if_abap_behv_message=>severity-success
-                                              text     = |Order { order-SalesOrderID } accepted| ) ) ).
+    LOOP AT orders INTO DATA(order_ok).
+      APPEND VALUE #( %tky = order_ok-%tky
+                      %msg = new_message_with_text(
+                               severity = if_abap_behv_message=>severity-success
+                               text     = |Order { order_ok-SalesOrderID } accepted| ) ) TO reported-salesorder.
+    ENDLOOP.
   ENDMETHOD.
 
   METHOD rejectOrder.
