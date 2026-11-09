@@ -12,6 +12,28 @@
 - 성공 응답(2xx)의 성공/정보/경고 메시지는 대개 **헤더**로 나간다. 오류(실패)는 헤더가 아니라 OData error 본문(4xx/5xx)이다.
 - Fiori Elements(UI5 V4 모델)는 보통 `SAP__Messages` 를 `$select` 하므로 state 메시지를 본문에서 받는다. 외부 API 클라이언트는 보통 안 하므로 transition 메시지를 **헤더에서만** 받는다.
 
+## HTTP 실측 ✅ (2026-11-09, Z5U, UI `ZUI_CIH_SALESORDER_O4` / Web API `ZAPI_CIH_SALESORDER_O4`)
+시험 소스: `testFlatParam`(static, 대상 없는 information), `acceptOrder`(인스턴스 `%tky` 에 success 메시지, 시험용 추가),
+`validateDates`(`%state_area` 오류 = state 메시지). 두 바인딩 결과 동일.
+
+| 요청 | 결과 |
+|---|---|
+| static action (대상 없음) | 204, 헤더 `Sap-Messages: [{"code":"SABP_BEHV/100","message":"flat: ...","numericSeverity":2}]` |
+| `acceptOrder` (`$select` 에 `SAP__Messages` 없음) | 200, **헤더** `Sap-Messages: [{"code":"SABP_BEHV/100","message":"Order 0000000007 accepted","numericSeverity":1,"target":""}]` |
+| `acceptOrder?$select=...,SAP__Messages` | 200, **본문** `"SAP__Messages":[{..., "target":"", "additionalTargets":[], "transition":true, "numericSeverity":1, "longtextUrl":null}]`, **헤더 없음** (이동, 중복 아님) |
+| draft Prepare (validateDates 실패) | **204**, 헤더 없음 (state 메시지는 헤더로 안 감) |
+| draft GET (`SAP__Messages` 미선택) | 메시지 어디에도 없음 |
+| draft GET `?$select=...,SAP__Messages` | 본문 `[{"message":"납품일은 주문일 이후여야 합니다.","target":"DeliveryDate","additionalTargets":["OrderDate"],"transition":false,"numericSeverity":4}]` |
+| draft PATCH 로 날짜를 고친 직후 | state 메시지 **그대로 남음** (on save 검증이라 Prepare/Activate 전까지 안 지워짐) |
+| Activate `?$select=...,SAP__Messages` | 201, `SAP__Messages: []` (state 메시지 정리) |
+| `sap-messages=transientOnly` (쿼리 옵션 / 요청 헤더) | 위 모든 경우에 **차이 없음**. 오류도 아님 (무시됨) |
+
+- `numericSeverity`: 1 success, 2 info, 3 warning, 4 error.
+- `%tky` 만 있고 `%element` 가 없으면 `target: ""` (엔티티 자체), `%element` 가 있으면 필드명, 여러 개면 `additionalTargets`.
+- `transition` 플래그로 클라이언트가 일회성(true)인지 지속(false)인지 구분.
+- 액션·Prepare/Activate 호출은 `If-Match` 가 없으면 428. Prepare 는 `$select` 불가(400, `$format` 만 허용).
+- ⚠️ `sap-messages: transientOnly` 의 원래 용도(UI5 V4 모델이 쓰는 요청 헤더로 알려짐)는 미확인. 이 시스템 RAP/SADL 응답에는 영향 없음.
+
 ## 근거 (✅)
 
 ### 1. `SAP__Messages` 요청 여부 판정

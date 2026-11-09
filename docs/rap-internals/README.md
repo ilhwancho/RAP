@@ -44,3 +44,4 @@ RAP 런타임(EML, 트랜잭션, 세이브 시퀀스)과 OData/Gateway 요청 �
 | 2026-11-04 | 액션 파라미터 필수 처리 실측 (flat vs deep, `mandatory : execute`, 대조 시험, Web API 응답) → 06 문서로 분리 |
 | 2026-11-09 | RAP BO 유닛 테스트 정리 → 07 문서 (키워드 문서 `ABAPCREATE_OBJECT_FOR_TESTING`·`ABAPCLASS_FOR_TESTING`·`ABENTEST_RELATIONS`, `BP_DEMO_MANAGED_ROOT_2`·`CL_SD_BEHV_SALESORDER` test include) |
 | 2026-11-09 | OData V4 성공 응답 메시지 경로: `SAP__Messages` 요청 여부, state/transition, 헤더 메시지 (`CL_SADL_GW_V4_DPC_ADAPTER`, `CL_SADL_GW_V4_GENERIC_DPC`, `CL_RAP_RT_MESSAGE_HANDLER`) → 07 문서 |
+| 2026-11-09 | 07 HTTP 실측: 헤더 `Sap-Messages` vs 본문 `SAP__Messages`(이동), state 메시지 동작, `sap-messages=transientOnly` 무효과 (`acceptOrder` 에 시험용 success 메시지 추가) |
