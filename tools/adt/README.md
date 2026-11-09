@@ -16,6 +16,7 @@ python tools/adt/adt_login.py              # 로그인 테스트
 python tools/adt/cds_view.py I_Country     # CDS 소스 + 데이터 10행
 python tools/adt/cds_view.py I_Country --rows 20
 python tools/adt/cds_view.py I_Country --source-only
+python tools/adt/cds_view.py I_Country --sql      # DB 에 생성된 SQL CREATE 문 (--raw: 줄바꿈 없이)
 
 # ABAP 소스 검색/조회 (SAP 표준 포함, 기본 저장 위치 /tmp/adt_src)
 python tools/adt/adt_source.py search "CL_RAP_*"

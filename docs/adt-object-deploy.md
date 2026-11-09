@@ -74,3 +74,21 @@
 ## 주의
 - 패키지가 없는 상태에서 객체 생성 시 `S_ABPLNGVS` 권한 오류로 보임 → 실제 원인은 패키지 미존재.
 - 기타 조회: 현재 사용자 `GET /sap/bc/adt/core/http/systeminformation`, 이름 검색 `GET /sap/bc/adt/repository/informationsystem/search?operation=quickSearch&query=Z*`
+
+## 4. 저장 없이 문법 체크 (check run)
+기존 객체 URI 에 **편집 중인 소스를 base64 로 실어** 체크만 돌린다. 시스템의 소스·활성 상태는 바뀌지 않는다 (lock 불필요).
+소스 안의 객체 이름은 URI 의 객체와 같아야 한다. 의존 객체(소비 뷰 등)가 쓰는 필드를 빼면 그 오류도 함께 나온다.
+```
+POST /sap/bc/adt/checkruns?reporters=abapCheckRun
+Content-Type: application/vnd.sap.adt.checkobjects+xml
+Accept: application/vnd.sap.adt.checkmessages+xml
+```
+```xml
+<chkrun:checkObjectList xmlns:chkrun="http://www.sap.com/adt/checkrun" xmlns:adtcore="http://www.sap.com/adt/core">
+ <chkrun:checkObject adtcore:uri="/sap/bc/adt/ddic/ddl/sources/zr_x" chkrun:version="inactive">
+  <chkrun:artifacts><chkrun:artifact chkrun:contentType="text/plain; charset=utf-8" chkrun:uri="/sap/bc/adt/ddic/ddl/sources/zr_x/source/main">
+   <chkrun:content>{base64 소스}</chkrun:content></chkrun:artifact></chkrun:artifacts>
+ </chkrun:checkObject></chkrun:checkObjectList>
+```
+- 응답 `<chkrun:checkMessage chkrun:type="E|W" chkrun:shortText=... chkrun:code="SDDL_PARSER_MSG(061)">`, 위치는 `chkrun:uri` 의 `#start=행,열`.
+- 장문: 메시지 안 `atom:link rel="http://www.sap.com/adt/relations/longtext"` 의 href 를 GET (HTML).

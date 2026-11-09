@@ -13,6 +13,9 @@ ABAP RAP 학습/개발용 레포. SAP S/4HANA Cloud 시스템 `Z5U` (`https://my
   - 이 시스템(Z5U)의 개발 패키지는 언어 버전 5(ABAP for Cloud Development) 이므로 기본적으로 ABAP Cloud 작업으로 간주한다.
   - 문법·제약을 확인할 때는 추측하지 말고 키워드 문서를 먼저 본다 (시스템 릴리스 기준 문서).
 - CDS 조회: `python tools/adt/cds_view.py <CDS명>`
+  - `--sql`: 활성 CDS 가 DB 에 만드는 SQL CREATE 문 (식 인라인·association→JOIN 변환 확인용)
+- 저장 없이 문법 체크(check run)는 `docs/adt-object-deploy.md` 4절.
+- CDS 문법/동작 정리 노트: `docs/cds/` (예: `reuse-expressions.md` — `$projection` 식 재사용, association ON 제약)
 - 객체 생성/수정/활성화 흐름(lock → PUT source → unlock → activate)은 `docs/adt-object-deploy.md` 참조.
 
 ## RAP 내부 동작 질문 (중요)
