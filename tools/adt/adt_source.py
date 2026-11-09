@@ -4,7 +4,7 @@ RAP 프레임워크 내부 분석용. 로그인은 adt_login.py 를 재사용합
 
 사용법:
   python tools/adt/adt_source.py search "CL_ABAP_BEHV*" "CL_RAP_*"     # 이름 검색 (와일드카드)
-  python tools/adt/adt_source.py get CL_RAP_TRANSACTION_MANAGER         # 소스 다운로드 (클래스는 include 포함)
+  python tools/adt/adt_source.py get CL_RAP_TRANSACTION_MANAGER         # 소스 다운로드 (클래스는 local/test include 포함)
   python tools/adt/adt_source.py get I_SALESORDERTP --type bdef
   python tools/adt/adt_source.py get I_SALESORDERTP --type ddls
   python tools/adt/adt_source.py methods CL_RAP_TRANSACTION_MANAGER     # 메서드 목록 + 줄번호
