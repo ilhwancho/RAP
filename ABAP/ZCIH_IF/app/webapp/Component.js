@@ -1,19 +1,34 @@
-// List Report 를 건너뛰고 Object Page 로 바로 진입 (⚠️ 실제 동작 확인 필요)
+// 앱 시작 시 IfInfo 첫 행을 GET 으로 조회해서 그 Object Page 로 바로 진입.
+// initializeFeatureToggles 는 Fiori Elements 의 public 비동기 훅으로,
+// AppComponent 가 이 Promise 를 await 한 뒤에 라우팅을 초기화한다 (onServicesStarted).
+// → 조회가 끝날 때까지 라우터가 시작되지 않으므로 List Report 가 먼저 보이지 않는다.
 sap.ui.define([
   "sap/fe/core/AppComponent",
-  "sap/ui/core/routing/HashChanger"
-], function (AppComponent, HashChanger) {
+  "sap/ui/core/routing/HashChanger",
+  "sap/base/Log"
+], function (AppComponent, HashChanger, Log) {
   "use strict";
 
   return AppComponent.extend("zcih.ifinfo.Component", {
     metadata: { manifest: "json" },
 
-    init: function () {
+    initializeFeatureToggles: async function () {
+      await AppComponent.prototype.initializeFeatureToggles.apply(this, arguments);
+
       const oHash = HashChanger.getInstance();
-      if (!oHash.getHash()) {                       // 최초 진입 시에만
-        oHash.replaceHash("IfInfo('IF_CBO_001')");
+      if (oHash.getHash()) {
+        return;                                   // 딥링크·새로고침·런치패드 시작 파라미터로 들어온 경우는 그대로
       }
-      AppComponent.prototype.init.apply(this, arguments);
+
+      try {
+        // GET .../IfInfo?$top=1  (키 필드는 autoExpandSelect 로 자동 포함)
+        const [oContext] = await this.getModel().bindList("/IfInfo").requestContexts(0, 1);
+        if (oContext) {
+          oHash.replaceHash(oContext.getPath().substring(1));   // "IfInfo('IF_CBO_001')"
+        }
+      } catch (oError) {
+        Log.error("IfInfo 조회 실패 - List Report 로 시작", oError);   // 실패해도 앱은 List Report 로 정상 기동
+      }
     }
   });
 });

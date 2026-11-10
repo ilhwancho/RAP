@@ -37,7 +37,7 @@ Fiori Elements V4 (List Report + Object Page, 앱 ID `zcih.ifinfo`). BAS 로 생
 - `ext/fragment/Guide.fragment.xml`: 안내 섹션
 - Object Page 바로 진입
   - 런치패드: `manifest.json` inbound 의 파라미터 `IfId` 기본값(`IF_CBO_001`) → 시작 파라미터로 키가 전달되면 Fiori Elements 가 Object Page 를 바로 연다 (커스텀 코드 없음)
-  - `Component.js`: 런치패드 밖(로컬 `npm start`) 테스트용 보조. 런치패드만 쓸 거면 삭제 가능
+  - `Component.js`: 해시가 비어 있으면 `initializeFeatureToggles`(FE public 비동기 훅, 라우팅 초기화 전에 await 됨)에서 `IfInfo` 첫 행을 GET 조회해 그 Object Page 로 진입. 키 하드코딩 없음, List Report 깜빡임 없음
 
 ## 확인 필요 (⚠️)
 1. custom entity 에 대한 메타데이터 확장 / composition 탐색 시 child query 호출 / strict(2) unmanaged 필수 메서드
