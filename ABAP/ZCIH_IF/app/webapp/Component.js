@@ -15,6 +15,15 @@ sap.ui.define([
     initializeFeatureToggles: async function () {
       await AppComponent.prototype.initializeFeatureToggles.apply(this, arguments);
 
+      // 런치패드 셸 제목 메뉴(좌측 상단)에서 상위 페이지(List Report = 앱 제목) 항목 제거.
+      // FE 는 첫 페이지가 List Report 면 앱 제목을 hierarchy 루트로 넣는다 (RootViewBaseController.computeTitleHierarchy).
+      // 이 시점(onServicesStarted)에는 서비스가 시작돼 있으므로 인스턴스의 setHierarchy 를 감싸 항상 빈 hierarchy 를 넘긴다.
+      const oShellServices = this.getShellServices();
+      const fnSetHierarchy = oShellServices.setHierarchy.bind(oShellServices);
+      oShellServices.setHierarchy = function () {
+        return fnSetHierarchy([]);
+      };
+
       const oHash = HashChanger.getInstance();
       if (oHash.getHash()) {
         return;                                   // 딥링크·새로고침·런치패드 시작 파라미터로 들어온 경우는 그대로
