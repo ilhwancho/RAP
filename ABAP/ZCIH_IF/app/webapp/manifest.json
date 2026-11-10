@@ -109,36 +109,12 @@
       "config": {},
       "routes": [
         {
-          "name": "IfInfoList",
-          "pattern": ":?query:",
-          "target": "IfInfoList"
-        },
-        {
           "name": "IfInfoObjectPage",
           "pattern": "IfInfo({key}):?query:",
           "target": "IfInfoObjectPage"
         }
       ],
       "targets": {
-        "IfInfoList": {
-          "type": "Component",
-          "id": "IfInfoList",
-          "name": "sap.fe.templates.ListReport",
-          "options": {
-            "settings": {
-              "contextPath": "/IfInfo",
-              "variantManagement": "None",
-              "initialLoad": "Enabled",
-              "navigation": {
-                "IfInfo": {
-                  "detail": {
-                    "route": "IfInfoObjectPage"
-                  }
-                }
-              }
-            }
-          }
-        },
         "IfInfoObjectPage": {
           "type": "Component",
           "id": "IfInfoObjectPage",

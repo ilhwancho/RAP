@@ -30,15 +30,14 @@ Fiori Object Page 에서 [인터페이스 수신 실행] 버튼 → RAP 액션 �
 | 결과 | 성공: `reported-%other` success → 토스트 / 실패: `failed` + error → 팝업 |
 
 ## 앱 (`app/webapp/`)
-Fiori Elements V4 (List Report + Object Page, 앱 ID `zcih.ifinfo`). BAS 로 생성한 프로젝트의 `webapp/` 에 덮어쓰면 됨.
-- `manifest.json`: dataSource(`ZUI_CIH_IF_O4`), FLP inbound(`ZCIH_IfReceive-display`), routing(LR/OP), OP 설정(안내 custom section, 대상 테이블 설정, 하위 네비게이션 없음)
+Fiori Elements V4 (Object Page 단독, List Report 라우트 없음, 앱 ID `zcih.ifinfo`). BAS 로 생성한 프로젝트의 `webapp/` 에 덮어쓰면 됨.
+- `manifest.json`: dataSource(`ZUI_CIH_IF_O4`), FLP inbound(`ZCIH_IfReceive-display`), routing(Object Page 라우트만. List Report 라우트가 없으면 셸 제목 메뉴에 상위 페이지 항목이 생기지 않음), OP 설정(안내 custom section, 대상 테이블 설정, 하위 네비게이션 없음)
 - `i18n/i18n.properties`: 앱 제목 등
 - `annotations/annotation.xml`: IsActionCritical
 - `ext/fragment/Guide.fragment.xml`: 안내 섹션
 - Object Page 바로 진입
   - 런치패드: `manifest.json` inbound 의 파라미터 `IfId` 기본값(`IF_CBO_001`) → 시작 파라미터로 키가 전달되면 Fiori Elements 가 Object Page 를 바로 연다 (커스텀 코드 없음)
-  - `Component.js`: 해시가 비어 있으면 `initializeFeatureToggles`(FE public 비동기 훅, 라우팅 초기화 전에 await 됨)에서 `IfInfo` 첫 행을 GET 조회해 그 Object Page 로 진입. 키 하드코딩 없음, List Report 깜빡임 없음
-  - 같은 훅에서 셸 제목 메뉴의 상위 페이지(List Report) 항목 제거 (`setHierarchy` 에 빈 배열 전달, ⚠️ FE 내부 동작 의존)
+  - `Component.js`: 해시가 비어 있으면 `initializeFeatureToggles`(FE public 비동기 훅, 라우팅 초기화 전에 await 됨)에서 `IfInfo` 첫 행을 GET 조회해 그 Object Page 로 진입. 키 하드코딩 없음. 조회 실패 시 오류 팝업
 
 ## 확인 필요 (⚠️)
 1. custom entity 에 대한 메타데이터 확장 / composition 탐색 시 child query 호출 / strict(2) unmanaged 필수 메서드
