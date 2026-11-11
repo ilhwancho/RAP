@@ -23,8 +23,8 @@ define table zat_cih_xxx {
   include zs_cih_audit;
 }
 ```
-인클루드 필드는 행 구조에 평평하게 펼쳐지므로 헬퍼는 필드 이름(`CREATED_BY`, `CREATED_AT`, `CHANGED_BY`, `CHANGED_AT`)으로 찾는다.
-(그룹명을 붙여도 필드 이름은 그대로 접근되므로 동작한다. `WITH SUFFIX` 로 이름이 바뀐 경우는 지원하지 않음.)
+필드 이름·타입은 문자열 상수가 아니라 **`ZS_CIH_AUDIT` 구조체에서** 가져온다 (그룹명을 붙여도 동작).
+`WITH SUFFIX` 로 이름이 바뀐 경우는 지원하지 않음.
 
 ## 사용
 ```abap
@@ -40,13 +40,13 @@ UPDATE zat_cih_xxx FROM TABLE @lt_old.
 ```
 
 ## 동작
-- 행 타입을 한 번 분석(RTTI)해서 채울 필드와 타입을 정한다.
-  - INSERT: 4개 필드 모두 필요. UPDATE: `CHANGED_*` 만 필요 (`CREATED_*` 는 건드리지 않음).
-  - 필드가 없거나 타입이 맞지 않으면 `ZCX_CIH_AUDIT`.
-- 사용자/시각은 **호출당 한 번** 구해 모든 행에 같은 값 (프레임워크와 동일).
-- 시각 필드 타입에 맞춰 변환 (프레임워크 `CL_CSP_ACT_SET_ADMIN_DATA` 방식):
-  `UTCLONG` 그대로 / `TIMESTAMPL`(p dec 7) `cl_abap_tstmp=>utclong2tstmp` / `TIMESTAMP`(p dec 0) `utclong2tstmp_short`.
-- 사용자 필드는 문자(`C`)/`STRING` 타입만 허용.
+- **검사**: RTTI 로 `ZS_CIH_AUDIT` 의 컴포넌트 목록(`get_included_view`)을 읽어, 행 타입에 같은 이름·같은 타입 필드가 모두 있는지
+  호출당 한 번 확인. 없거나 타입이 다르면 `ZCX_CIH_AUDIT`.
+- **값 세팅**: `ZS_CIH_AUDIT` 타입 작업영역을 채운 뒤 `MOVE-CORRESPONDING` 으로 행에 복사 → 같은 이름 필드만 바뀌고 나머지는 그대로.
+  - INSERT: 4개 필드 모두 현재 사용자/시각.
+  - UPDATE: 행의 기존 감사 값을 먼저 읽어(`MOVE-CORRESPONDING row TO ls_audit`) `changed_*` 만 교체.
+  - `ls_audit-created_by` 처럼 정적 접근이라, 구조체 필드명·타입이 바뀌면 문자열 상수와 달리 **문법 오류로 바로 드러난다**.
+- 사용자/시각은 **호출당 한 번** 구해 모든 행에 같은 값 (프레임워크와 동일). 시각은 `utclong` 으로 받아 `cl_abap_tstmp=>utclong2tstmp` 로 TIMESTAMPL 변환.
 
 ## 주의
 - `UPDATE dbtab FROM wa` 는 모든 컬럼을 덮어쓴다 → 새로 만든 구조체로 UPDATE 하면 `created_*` 가 비워진다.

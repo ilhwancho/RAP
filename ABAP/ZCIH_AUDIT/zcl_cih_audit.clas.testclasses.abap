@@ -23,48 +23,39 @@ CLASS ltc_audit DEFINITION FINAL FOR TESTING RISK LEVEL HARMLESS DURATION SHORT.
   PRIVATE SECTION.
     " 그룹명 없이 인클루드 (실제 테이블과 같은 형태)
     TYPES BEGIN OF ty_row.
-    TYPES   id TYPE i.
+    TYPES   id   TYPE i.
+    TYPES   text TYPE string.
     INCLUDE TYPE zs_cih_audit.
     TYPES END OF ty_row.
     TYPES tt_row TYPE STANDARD TABLE OF ty_row WITH EMPTY KEY.
 
     TYPES:
-      BEGIN OF ty_row_utclong,
+      BEGIN OF ty_row_no_audit,
+        id TYPE i,
+      END OF ty_row_no_audit,
+      " 이름은 같지만 타입이 다른 경우 (created_at 이 UTCLONG)
+      BEGIN OF ty_row_bad_type,
         id         TYPE i,
         created_by TYPE abp_creation_user,
         created_at TYPE utclong,
         changed_by TYPE abp_lastchange_user,
-        changed_at TYPE utclong,
-      END OF ty_row_utclong,
-      BEGIN OF ty_row_short,
-        id         TYPE i,
-        created_by TYPE abp_creation_user,
-        created_at TYPE timestamp,
-        changed_by TYPE abp_lastchange_user,
-        changed_at TYPE timestamp,
-      END OF ty_row_short,
-      BEGIN OF ty_row_no_audit,
-        id TYPE i,
-      END OF ty_row_no_audit,
-      BEGIN OF ty_row_bad_type,
-        id         TYPE i,
-        changed_by TYPE abp_lastchange_user,
-        changed_at TYPE d,
+        changed_at TYPE abp_lastchange_tstmpl,
       END OF ty_row_bad_type.
+
+    CONSTANTS c_now_tstmpl TYPE timestampl VALUE '20261111102030.1234567'.
 
     DATA mo_context TYPE REF TO ltd_context.
     DATA mo_cut     TYPE REF TO zcl_cih_audit.
 
     METHODS setup.
     METHODS insert_sets_all_fields     FOR TESTING RAISING cx_static_check.
+    METHODS insert_keeps_other_fields  FOR TESTING RAISING cx_static_check.
     METHODS update_keeps_created       FOR TESTING RAISING cx_static_check.
     METHODS same_values_for_all_rows   FOR TESTING RAISING cx_static_check.
-    METHODS utclong_fields             FOR TESTING RAISING cx_static_check.
-    METHODS short_timestamp_fields     FOR TESTING RAISING cx_static_check.
     METHODS single_row                 FOR TESTING RAISING cx_static_check.
     METHODS empty_table_is_ok          FOR TESTING RAISING cx_static_check.
     METHODS missing_fields_raise       FOR TESTING.
-    METHODS unsupported_type_raises    FOR TESTING.
+    METHODS different_type_raises      FOR TESTING.
 ENDCLASS.
 
 
@@ -84,10 +75,17 @@ CLASS ltc_audit IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_equals( act = lt_data[ 1 ]-created_by exp = 'TESTUSER' ).
     cl_abap_unit_assert=>assert_equals( act = lt_data[ 1 ]-changed_by exp = 'TESTUSER' ).
-    cl_abap_unit_assert=>assert_equals( act = lt_data[ 1 ]-created_at
-                                        exp = CONV timestampl( '20261111102030.1234567' ) ).
-    cl_abap_unit_assert=>assert_equals( act = lt_data[ 1 ]-changed_at
-                                        exp = CONV timestampl( '20261111102030.1234567' ) ).
+    cl_abap_unit_assert=>assert_equals( act = lt_data[ 1 ]-created_at exp = c_now_tstmpl ).
+    cl_abap_unit_assert=>assert_equals( act = lt_data[ 1 ]-changed_at exp = c_now_tstmpl ).
+  ENDMETHOD.
+
+  METHOD insert_keeps_other_fields.
+    DATA(lt_data) = VALUE tt_row( ( id = 7 text = `keep me` ) ).
+
+    mo_cut->set_for_insert( CHANGING ct_data = lt_data ).
+
+    cl_abap_unit_assert=>assert_equals( act = lt_data[ 1 ]-id   exp = 7 ).
+    cl_abap_unit_assert=>assert_equals( act = lt_data[ 1 ]-text exp = `keep me` ).
   ENDMETHOD.
 
   METHOD update_keeps_created.
@@ -103,8 +101,7 @@ CLASS ltc_audit IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals( act = lt_data[ 1 ]-created_at
                                         exp = CONV timestampl( '20250101000000.0000000' ) ).
     cl_abap_unit_assert=>assert_equals( act = lt_data[ 1 ]-changed_by exp = 'TESTUSER' ).
-    cl_abap_unit_assert=>assert_equals( act = lt_data[ 1 ]-changed_at
-                                        exp = CONV timestampl( '20261111102030.1234567' ) ).
+    cl_abap_unit_assert=>assert_equals( act = lt_data[ 1 ]-changed_at exp = c_now_tstmpl ).
   ENDMETHOD.
 
   METHOD same_values_for_all_rows.
@@ -113,30 +110,9 @@ CLASS ltc_audit IMPLEMENTATION.
     mo_cut->set_for_insert( CHANGING ct_data = lt_data ).
 
     LOOP AT lt_data INTO DATA(ls_row).
-      cl_abap_unit_assert=>assert_equals( act = ls_row-created_at exp = lt_data[ 1 ]-created_at ).
-      cl_abap_unit_assert=>assert_equals( act = ls_row-changed_at exp = lt_data[ 1 ]-changed_at ).
+      cl_abap_unit_assert=>assert_equals( act = ls_row-created_at exp = c_now_tstmpl ).
+      cl_abap_unit_assert=>assert_equals( act = ls_row-changed_at exp = c_now_tstmpl ).
     ENDLOOP.
-  ENDMETHOD.
-
-  METHOD utclong_fields.
-    DATA lt_data TYPE STANDARD TABLE OF ty_row_utclong WITH EMPTY KEY.
-    lt_data = VALUE #( ( id = 1 ) ).
-
-    mo_cut->set_for_insert( CHANGING ct_data = lt_data ).
-
-    cl_abap_unit_assert=>assert_equals( act = lt_data[ 1 ]-created_at exp = mo_context->mv_now ).
-    cl_abap_unit_assert=>assert_equals( act = lt_data[ 1 ]-changed_at exp = mo_context->mv_now ).
-  ENDMETHOD.
-
-  METHOD short_timestamp_fields.
-    DATA lt_data TYPE STANDARD TABLE OF ty_row_short WITH EMPTY KEY.
-    mo_context->mv_now = CONV utclong( '2026-11-11T10:20:30.0000000' ).
-    lt_data = VALUE #( ( id = 1 ) ).
-
-    mo_cut->set_for_insert( CHANGING ct_data = lt_data ).
-
-    cl_abap_unit_assert=>assert_equals( act = lt_data[ 1 ]-created_at exp = CONV timestamp( '20261111102030' ) ).
-    cl_abap_unit_assert=>assert_equals( act = lt_data[ 1 ]-changed_at exp = CONV timestamp( '20261111102030' ) ).
   ENDMETHOD.
 
   METHOD single_row.
@@ -166,7 +142,7 @@ CLASS ltc_audit IMPLEMENTATION.
     ENDTRY.
   ENDMETHOD.
 
-  METHOD unsupported_type_raises.
+  METHOD different_type_raises.
     DATA lt_data TYPE STANDARD TABLE OF ty_row_bad_type WITH EMPTY KEY.
     lt_data = VALUE #( ( id = 1 ) ).
 

@@ -83,9 +83,9 @@ COMMIT ENTITIES → 세이브 시퀀스 → managed save (CSP)
 
 | | 프레임워크 | `zcl_cih_audit` |
 |---|---|---|
-| 필드 식별 | CDS 어노테이션 → 메타데이터 요소명 목록 | 고정 필드명(`CREATED_BY` 등) + RTTI (그룹명 없는 인클루드 OK) |
+| 필드 식별 | CDS 어노테이션 → 메타데이터 요소명 목록 | `ZS_CIH_AUDIT` 구조체(RTTI 컴포넌트 목록 + 타입 작업영역/`MOVE-CORRESPONDING`). 그룹명 없는 인클루드 OK |
 | 사용자 | `sy-uname` | `cl_abap_context_info=>get_user_technical_name( )` |
-| 시각 | `utclong_current( )` 1회 → 필드 타입별 변환 | 동일 (`utclong_current( )` 1회 → UTCLONG/TIMESTAMPL/TIMESTAMP 변환) |
+| 시각 | `utclong_current( )` 1회 → 필드 타입별 변환 | `utclong_current( )` 1회 → 구조체 타입(TIMESTAMPL)으로 변환. 테이블 필드 타입은 인클루드라 구조체와 동일 |
 | create / update 구분 | 버퍼가 이미 구분 (creates/updates/recreates) | 호출자가 메서드 선택 |
 | update 시 created 보호 | partial update + `%control` 플래그로 관리 필드 컬럼만 추가 | 호출자 책임 (전체 덮어쓰는 UPDATE 주의) |
 | 부모 last changed 전파 | 있음 (조상 엔터티에 update 추가) | 없음 |
