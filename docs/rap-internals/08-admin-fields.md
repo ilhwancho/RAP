@@ -83,11 +83,11 @@ COMMIT ENTITIES → 세이브 시퀀스 → managed save (CSP)
 
 | | 프레임워크 | `zcl_cih_audit` |
 |---|---|---|
-| 필드 식별 | CDS 어노테이션 → 메타데이터 요소명 목록 | 인클루드 그룹명 `AUDIT` + 고정 구조체 타입 |
+| 필드 식별 | CDS 어노테이션 → 메타데이터 요소명 목록 | 고정 필드명(`CREATED_BY` 등) + RTTI (그룹명 없는 인클루드 OK) |
 | 사용자 | `sy-uname` | `cl_abap_context_info=>get_user_technical_name( )` |
-| 시각 | `utclong_current( )` 1회 → 필드 타입별 변환 | `GET TIME STAMP` (TIMESTAMPL 고정) |
+| 시각 | `utclong_current( )` 1회 → 필드 타입별 변환 | 동일 (`utclong_current( )` 1회 → UTCLONG/TIMESTAMPL/TIMESTAMP 변환) |
 | create / update 구분 | 버퍼가 이미 구분 (creates/updates/recreates) | 호출자가 메서드 선택 |
 | update 시 created 보호 | partial update + `%control` 플래그로 관리 필드 컬럼만 추가 | 호출자 책임 (전체 덮어쓰는 UPDATE 주의) |
 | 부모 last changed 전파 | 있음 (조상 엔터티에 update 추가) | 없음 |
 | draft | 별도 전략 | 해당 없음 |
-| 테스트 용이성 | provider 를 `lif_admin_data_provider` 로 분리 (테스트에서 교체) | static, 교체 불가 |
+| 테스트 용이성 | provider 를 `lif_admin_data_provider` 로 분리 (테스트에서 교체) | 동일 (`ZIF_CIH_AUDIT_CONTEXT` 주입) |
