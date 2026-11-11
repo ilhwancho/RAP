@@ -17,6 +17,7 @@ RAP 런타임(EML, 트랜잭션, 세이브 시퀀스)과 OData/Gateway 요청 �
 | [05-open-questions.md](05-open-questions.md) | 미분석 주제, 읽을 수 없는 소스 | 다음에 무엇을 더 파야 하나 |
 | [06-action-parameters.md](06-action-parameters.md) | 액션 파라미터 (abstract entity/BDEF, flat vs deep, 필수 처리) | 파라미터 필드를 필수로 만들 수 있나, OData 에서 어떻게 검사되나 |
 | [07-unit-testing.md](07-unit-testing.md) | RAP BO 유닛 테스트 (ABAP Unit, test double, handler 단위 vs EML 통합) | BO 테스트 클래스를 어디에 어떻게 만드나, 키워드 문서는 뭐라 하나 |
+| [08-admin-fields.md](08-admin-fields.md) | 관리(감사) 필드 자동 세팅 (`@Semantics.user.*`, `@Semantics.systemDateTime.*`) | 어노테이션 단 필드를 프레임워크가 언제·어떻게 채우나 |
 
 ## 표기 규칙
 
@@ -42,3 +43,4 @@ RAP 런타임(EML, 트랜잭션, 세이브 시퀀스)과 OData/Gateway 요청 �
 | 2026-11-04 | 세이버 수집 조건(acc_modify), managed `save_modified` 빈 변경 시 호출, rollback/discard 시 cleanup 경로, 앱 class-data 수명 (`GROUP_BEHV_BY_CLSS`, `COLLECT_SAVERS`, `CL_ABAP_BEHV_SAVER_MNGD_CSP`, `_discard_changes`, `EXECUTE_ROLLBACK`) |
 | 2026-11-04 | 액션 파라미터 필수 처리 실측 (flat vs deep, `mandatory : execute`, 대조 시험, Web API 응답) → 06 문서로 분리 |
 | 2026-11-09 | RAP BO 유닛 테스트 정리 → 07 문서 (키워드 문서 `ABAPCREATE_OBJECT_FOR_TESTING`·`ABAPCLASS_FOR_TESTING`·`ABENTEST_RELATIONS`, `BP_DEMO_MANAGED_ROOT_2`·`CL_SD_BEHV_SALESORDER` test include) |
+| 2026-11-11 | 관리 필드 자동 세팅 → 08 문서 (`CL_CSP_ACT_SET_ADMIN_DATA`, `CL_CSP_RUNTIME_CATALOG->define_processes`, `CL_CSP_MD_ANNOTATION_READER`, `CL_CSP_MD_ENTITY`, `CL_CSP_DEC_SET_ADMIN_DATA`, `CL_CSP_DEC_ADMDAT_ON_ANCESTORS`) |
