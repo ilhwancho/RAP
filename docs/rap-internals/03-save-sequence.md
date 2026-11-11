@@ -85,5 +85,13 @@ method check_before_save.   " validation
 - interface BDEF 로 요청한 응답은 `CL_ABAP_BEHV_SAVER_PROJ=>TRANSFER_RESP_TO_PROJ_LOG` 로 base → interface 매핑.
 - `COMMIT ENTITIES BEGIN ... END` (scope 'E') 는 `close_save` 만.
 
+## 앱 세이버(save / save_modified)에서 DB 쓰기 실패 처리 (✅ 키워드 문서)
+- `CHECK sy-subrc = 0` 은 덤프가 아니라 **메서드를 조용히 빠져나가는 것**(`IF NOT ... RETURN`, `ABAPCHECK_PROCESSING_BLOCKS`) → 실패가 묻히고 COMMIT 은 성공 처리된다. 쓰면 안 됨.
+- late save phase 에선 실패하면 안 되는 게 원칙 → 실패 = 프로그래밍 오류로 보고 덤프:
+  - `RAISE SHORTDUMP NEW zcx_...( ... )` / `THROW SHORTDUMP` — 런타임 오류 `RAISE_SHORTDUMP`, **DB rollback**, ST22 에 예외 텍스트·속성·previous (`ABAPRAISE_SHORTDUMP`)
+  - `ASSERT sy-subrc = 0.` — `ASSERTION_FAILED` (정보는 적음, `ABAPASSERT`)
+- 덤프 대신 소비자에게 알리려면 세이버를 `CL_ABAP_BEHAVIOR_SAVER_FAILED` 상속 → `save`/`save_modified`/`adjust_numbers` 에 `failed` 추가.
+  COMMIT ENTITIES `sy-subrc = 8`, 트랜잭션은 불일치 상태 → 소비자가 `ROLLBACK ENTITIES` 해야 함(안 하면 `CX_SADL_DUMP_APPL_MODEL_ERROR`). 예외적 경우(BAPI 저장 등)에만 (`ABENABP_CL_ABAP_BEH_SAVER_FAILED`).
+
 ## 우리 BO 매핑 예
 `setSalesOrderID` = finalize, `validateCustomer/validateDates/validateQuantity` = check_before_save.

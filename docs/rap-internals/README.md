@@ -44,3 +44,4 @@ RAP 런타임(EML, 트랜잭션, 세이브 시퀀스)과 OData/Gateway 요청 �
 | 2026-11-04 | 액션 파라미터 필수 처리 실측 (flat vs deep, `mandatory : execute`, 대조 시험, Web API 응답) → 06 문서로 분리 |
 | 2026-11-09 | RAP BO 유닛 테스트 정리 → 07 문서 (키워드 문서 `ABAPCREATE_OBJECT_FOR_TESTING`·`ABAPCLASS_FOR_TESTING`·`ABENTEST_RELATIONS`, `BP_DEMO_MANAGED_ROOT_2`·`CL_SD_BEHV_SALESORDER` test include) |
 | 2026-11-11 | 관리 필드 자동 세팅 → 08 문서 (`CL_CSP_ACT_SET_ADMIN_DATA`, `CL_CSP_RUNTIME_CATALOG->define_processes`, `CL_CSP_MD_ANNOTATION_READER`, `CL_CSP_MD_ENTITY`, `CL_CSP_DEC_SET_ADMIN_DATA`, `CL_CSP_DEC_ADMDAT_ON_ANCESTORS`) |
+| 2026-11-11 | 03 에 앱 세이버의 DB 쓰기 실패 처리 추가 (CHECK vs RAISE SHORTDUMP/ASSERT, `CL_ABAP_BEHAVIOR_SAVER_FAILED`) — 키워드 문서 기준 |
