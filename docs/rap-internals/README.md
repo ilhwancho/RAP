@@ -19,6 +19,7 @@ RAP 런타임(EML, 트랜잭션, 세이브 시퀀스)과 OData/Gateway 요청 �
 | [07-unit-testing.md](07-unit-testing.md) | RAP BO 유닛 테스트 (ABAP Unit, test double, handler 단위 vs EML 통합) | BO 테스트 클래스를 어디에 어떻게 만드나, 키워드 문서는 뭐라 하나 |
 | [08-odata-messages.md](08-odata-messages.md) | 성공 응답의 메시지 (`sap-messages` 헤더 vs `SAP__Messages`, state/transition) | `reported` 메시지가 응답의 어디로 가나 |
 | [09-draft-validation-prepare.md](09-draft-validation-prepare.md) | draft 에서 validation 시점, Prepare 내부, `draftfieldchanges` | draft PATCH 때 validation 이 왜 안 도나, Prepare 는 무엇인가 |
+| [10-value-help-metadata.md](10-value-help-metadata.md) | 밸류헬프 메타데이터 (`additionalBinding` usage → `ValueListParameter*`, DisplayOnly 규칙) | 필터 바인딩한 필드가 VH 다이얼로그 컬럼에서 왜 사라지나 |
 
 ## 표기 규칙
 
@@ -48,3 +49,4 @@ RAP 런타임(EML, 트랜잭션, 세이브 시퀀스)과 OData/Gateway 요청 �
 | 2026-11-09 | 08 HTTP 실측: 헤더 `Sap-Messages` vs 본문 `SAP__Messages`(이동), state 메시지 동작, `sap-messages=transientOnly` 무효과 (`acceptOrder` 에 시험용 success 메시지 추가) |
 | 2026-11-09 | draft 세이버(`CL_ABAP_BEHV_SAVER_MNGD_DSP`)는 DVM 미상속 → PATCH 시 on save validation 미실행, 트리거는 `draftfieldchanges` 에 저장, Prepare(`exec_determine_action is_draft`) 내부 → 09 문서 |
 | 2026-11-09 | 07: 방식 A / A' / fixture 4개를 ZCIH_SO_BO 에 적용해 실측 (13 테스트 PASS), 확인된 사실·전체 코드 수록 |
+| 2026-11-13 | 밸류헬프 메타데이터 생성 규칙: usage별 파라미터, `#FILTER_AND_DISPLAY`, DisplayOnly 제외 조건 (`CL_SADL_GW_V4_MODEL_VH_MAP`, `CL_SADL_GW_V4_VH_MAP_BUILDER`), 실측 패키지 `ZCIH_VH_TEST` → 10 문서 |

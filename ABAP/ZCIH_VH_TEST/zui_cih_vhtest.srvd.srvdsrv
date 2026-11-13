@@ -1,0 +1,4 @@
+@EndUserText.label: 'VH additionalBinding test'
+define service ZUI_CIH_VHTEST {
+  expose ZC_CIH_VHTEST as VHTest;
+}
