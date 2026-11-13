@@ -15,7 +15,7 @@ ABAP RAP 학습/개발용 레포. SAP S/4HANA Cloud 시스템 `Z5U` (`https://my
 - CDS 조회: `python tools/adt/cds_view.py <CDS명>`
   - `--sql`: 활성 CDS 가 DB 에 만드는 SQL CREATE 문 (식 인라인·association→JOIN 변환 확인용)
 - 저장 없이 문법 체크(check run)는 `docs/adt-object-deploy.md` 4절.
-- CDS 문법/동작 정리 노트: `docs/cds/` (예: `reuse-expressions.md` — `$projection` 식 재사용, association ON 제약)
+- CDS 문법/동작 정리 노트: `docs/cds/` (예: `reuse-expressions.md` — `$projection` 식 재사용, association ON 제약 / `bom-tables.md` — MAST·STKO·STAS·STPO 관계와 released CDS 매핑)
 - 세션별 작업 요약: `docs/session-notes/`
 - 객체 생성/수정/활성화 흐름(lock → PUT source → unlock → activate)은 `docs/adt-object-deploy.md` 참조.
 
