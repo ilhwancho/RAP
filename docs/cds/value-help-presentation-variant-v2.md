@@ -51,6 +51,16 @@ L3c 주의:
 ```
 - Object Page 의 SmartField 값 도움말에는 별도 확장(`onInitSmartFilterBarExtension` 이 아니라 Object Page 쪽 훅)이 필요 → 미검증.
 
+## qualifier 를 넣으면 V2 값 도움말이 깨지는 이유 (UI5 1.154 소스)
+1. `MetadataAnalyser.getValueListAnnotationLazy` (MetadataAnalyser-dbg.js ~1748–1766, 함수용 ~1896–1910):
+   ValueList 에 `PresentationVariantQualifier` 가 있으면 `primaryValueListAnnotation` 이 아니라 `primaryValueListAnnotationWithPVQualifier` 에 넣는다
+   (소스 주석 "TODO: to be removed in the next release! - Ignore ValueList with PresentationVariantQualifier").
+2. `BaseValueListProvider._onAnnotationLoad` (~248–281): 첫 줄에서 `this.oPrimaryValueListAnnotation = mValueList.primaryValueListAnnotation` (= undefined) 으로
+   상태를 잡고 `_resolveAnnotationData(undefined)`. 그 아래에서 WithPVQualifier 를 합치긴 하지만 **지역 변수 `oAnnotation` 에만** 합쳐서 return → 프로바이더 상태엔 반영 안 됨.
+   → `sValueListEntitySetName` 이 비어 `ValueListProvider - Empty sValueListEntitySetName ... (missing primaryValueListAnnotation)`, 요청 `GET .../null?$filter=startswith(undefined,E)` 404.
+3. SmartField: `ODataHelper.loadValueListAnnotation` → 같은 `getValueListAnnotationLazy` 결과를 받은 `ODataControlFactory._initValueList` (~385–393) 가
+   `oValueListAnnotations.primaryValueListAnnotation`(undefined) 을 `ODataHelper.getODataValueListKeyProperty` (~1068) 에 넘기고 거기서 `.fields` 접근 → `TypeError ... reading 'fields'`.
+
 ## 다이얼로그가 PV 를 읽고도 정렬 안 하는 이유 (UI5 1.154 소스 + 런타임 확인)
 1.154 다이얼로그 테이블은 `ValueHelpDialog._createDefaultSFBSmartTable` 이 만드는 **내부 SmartTable**(`…-valueHelpDialog-table`).
 `ValueHelpProvider._rebindTable` 은 이 테이블이 `isInternal` 이면 바로 return 하므로 정렬은 SmartTable 쪽에서 결정된다.
