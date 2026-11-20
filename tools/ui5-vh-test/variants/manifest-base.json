@@ -1,0 +1,66 @@
+{
+ "_version": "1.32.0",
+ "sap.app": {
+  "id": "zvhtest",
+  "type": "application",
+  "title": "VH test",
+  "applicationVersion": {
+   "version": "1.0.0"
+  },
+  "dataSources": {
+   "mainService": {
+    "uri": "/sap/opu/odata/sap/ZUI_CIH_SOVHTEST_O2/",
+    "type": "OData",
+    "settings": {
+     "odataVersion": "2.0",
+     "annotations": [
+      "van",
+      "local"
+     ]
+    }
+   },
+   "van": {
+    "uri": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='ZUI_CIH_SOVHTEST_O2_VAN',Version='0001')/$value",
+    "type": "ODataAnnotation"
+   },
+   "local": {
+    "uri": "/feapp/local.xml",
+    "type": "ODataAnnotation",
+    "settings": {
+     "localUri": "/feapp/local.xml"
+    }
+   }
+  }
+ },
+ "sap.ui": {
+  "technology": "UI5"
+ },
+ "sap.ui5": {
+  "dependencies": {
+   "libs": {
+    "sap.suite.ui.generic.template": {},
+    "sap.ui.comp": {}
+   }
+  },
+  "models": {
+   "": {
+    "dataSource": "mainService",
+    "settings": {
+     "defaultBindingMode": "TwoWay",
+     "useBatch": true
+    }
+   }
+  }
+ },
+ "sap.ui.generic.app": {
+  "pages": [
+   {
+    "entitySet": "ZC_CIH_SOVHTest",
+    "component": {
+     "name": "sap.suite.ui.generic.template.ListReport",
+     "list": true
+    }
+   }
+  ]
+ }
+}

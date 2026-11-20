@@ -1,0 +1,20 @@
+<!doctype html><html><head><meta charset="utf-8">
+<script id="sap-ui-bootstrap" src="https://ui5.sap.com/resources/sap-ui-core.js"
+ data-sap-ui-libs="sap.m,sap.ui.comp,sap.ui.table" data-sap-ui-async="true" data-sap-ui-compat-version="edge"
+ data-sap-ui-theme="sap_horizon"></script>
+<script>
+sap.ui.getCore().attachInit(function(){
+ sap.ui.require(["sap/ui/model/odata/v2/ODataModel","sap/ui/comp/smartfilterbar/SmartFilterBar","sap/ui/comp/smartfield/SmartField","sap/m/VBox"],
+ function(ODataModel, SmartFilterBar, SmartField, VBox){
+  var m = new ODataModel("/sap/opu/odata/sap/ZUI_CIH_SOVHTEST_O2/", {useBatch:false, defaultBindingMode:"TwoWay", annotationURI:["/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='ZUI_CIH_SOVHTEST_O2_VAN',Version='0001')/$value"]});
+  var sfb = new SmartFilterBar("sfb",{entitySet:"ZC_CIH_SOVHTest", liveMode:false});
+  var sf = new SmartField("sf",{value:"{CurrencyCode}", editable:true});
+  var box = new VBox({items:[sfb, sf]}); box.setModel(m);
+  m.metadataLoaded().then(function(){
+    var ctx = m.createEntry("/ZC_CIH_SOVHTest", {properties:{CurrencyCode:""}});
+    sf.setBindingContext(ctx); window.__ready = true;
+  });
+  box.placeAt(document.body);
+ });
+});
+</script></head><body class="sapUiBody"></body></html>
