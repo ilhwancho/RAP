@@ -2,7 +2,7 @@
 @EndUserText.label: 'Currency VH (PV sort test)'
 @ObjectModel.dataCategory: #VALUE_HELP
 @Search.searchable: true
-@UI.presentationVariant: [{ qualifier: 'SortDesc',
+@UI.presentationVariant: [{
                             sortOrder: [{ by: 'Decimals', direction: #DESC }],
                             visualizations: [{ type: #AS_LINEITEM }] }]
 define view entity ZI_CIH_CurrencyVH_Test

@@ -2,7 +2,7 @@
 
 2026-11-20 실측. Z5U(Release 920), SAPUI5 1.154 (`sap.ui.comp`, ui5.sap.com).
 테스트 객체: 패키지 `ZCIH_VH_TEST` (`ABAP/ZCIH_VH_TEST/`), 바인딩 `ZUI_CIH_SOVHTEST_O2` (V2 UI).
-- 시스템의 테스트 CDS 마지막 상태: VH PV `#SortDesc`(Decimals desc) + 소비 쪽 `presentationVariantQualifier: 'SortDesc'` → V4 정상, **V2 바인딩 값 도움말은 깨진 상태**(A 경우).
+- 시스템의 테스트 CDS 마지막 상태: VH PV qualifier 없음(Decimals desc), 소비 쪽 qualifier 없음 → V2 값 도움말 정상(다이얼로그는 키 정렬), V4 는 PV 정렬.
 - VH: `ZI_CIH_CurrencyVH_Test` (I_Currency 래핑, `@UI.presentationVariant` qualifier `SortDesc`, Currency DESC)
 - 소비: `ZC_CIH_SOVHTest.CurrencyCode`
 
@@ -60,6 +60,11 @@ L3c 주의:
    → `sValueListEntitySetName` 이 비어 `ValueListProvider - Empty sValueListEntitySetName ... (missing primaryValueListAnnotation)`, 요청 `GET .../null?$filter=startswith(undefined,E)` 404.
 3. SmartField: `ODataHelper.loadValueListAnnotation` → 같은 `getValueListAnnotationLazy` 결과를 받은 `ODataControlFactory._initValueList` (~385–393) 가
    `oValueListAnnotations.primaryValueListAnnotation`(undefined) 을 `ODataHelper.getODataValueListKeyProperty` (~1068) 에 넘기고 거기서 `.fields` 접근 → `TypeError ... reading 'fields'`.
+
+### 버전 확인 (2026-11-20)
+- ui5.sap.com 최신 공개 버전 = 1.154.0 (2026-10-28 빌드). 위 소스 분석 기준.
+- Z5U 런치패드 UI5 = **1.148.12** (`/sap/bc/ui5_ui5/ui2/ushell/resources/sap-ui-version.json`). 1.148.12 소스도 같은 코드(TODO 주석, `_onAnnotationLoad` 첫 줄, VHD `showVariantManagement: false` + 빈 sorter 조건, `_oCurrentVariant` 체크)이고,
+  실측도 동일: qualifier 지정 시 (a)(b)(c) 다이얼로그 요청 없음 + SmartField `reading 'fields'`, qualifier 없을 때 (a)(b)(c) `Currency asc`.
 
 ## 다이얼로그가 PV 를 읽고도 정렬 안 하는 이유 (UI5 1.154 소스 + 런타임 확인)
 1.154 다이얼로그 테이블은 `ValueHelpDialog._createDefaultSFBSmartTable` 이 만드는 **내부 SmartTable**(`…-valueHelpDialog-table`).
