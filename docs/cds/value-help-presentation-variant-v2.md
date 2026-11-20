@@ -96,6 +96,16 @@ L3c 주의:
 → V4 는 어노테이션만으로 자동완성·다이얼로그 모두 정렬됨. (i) 은 V2 에서 값 도움말을 깨뜨리는 조합인데 V4 에서는 정상, PV 가 qualified 하나뿐이므로 qualifier 로 찾는 것도 확인.
 V4 Object Page 필드, 다른 UI5 버전은 미검증.
 
+## V4(sap.fe) 는 같은 지점을 어떻게 처리하나 (UI5 1.154 소스)
+| 지점 | V2 (`sap.ui.comp`) | V4 (`sap.fe.macros` + `sap.ui.mdc`) |
+|---|---|---|
+| ValueList 의 `PresentationVariantQualifier` | `MetadataAnalyser` 가 별도 칸(`…WithPVQualifier`)으로 빼고, `BaseValueListProvider._onAnnotationLoad` 가 상태에 다시 안 넣음 → VH 깨짐 | 별도 분류 없음. `ValueListHelper.getPresentationVariant` 가 `/<CollectionPath>/@UI.PresentationVariant#<PresentationVariantQualifier>` 로 PV 를 바로 찾음 (qualifier 없으면 unqualified PV) |
+| 자동완성 정렬 | `ValueListProvider` 가 VH 타입에서 PV 를 따로 찾지만 드롭다운에서만 sorter 사용 | `ValueListHelper.getTableItemsParameters` → `getSortConditionsFromPresentationVariant(…, isSuggestion=true)` 가 아이템 바인딩에 `sorter: [...]` 를 직접 넣음 (PV 없고 고정값이면 기본 정렬) |
+| 다이얼로그 정렬 | 내부 SmartTable 이 PV 를 `_aInitialSorters` 까지 계산하지만 variant management 꺼져 있어 `_getTablePersonalisationData()` 가 null → VHD 가 키 asc 추가 | `ValueListDialogTable.fragment.xml` 이 mdc:Table 에 `macrodata:sortConditions="{… formatter:'VLH.getSortConditionsFromPresentationVariant'}"` 로 PV 정렬을 심고, `valuehelp/TableDelegate.fetchProperties → setSortConditions` 가 `table.setSortConditions(...)` 로 **테이블 상태**에 넣음. 바인딩 때 mdc `TableDelegate.updateBindingInfo → getSorters()` 가 그 상태를 sorter 로 변환 (variant management 무관) |
+| 기본 키 정렬 | VHD `beforeRebindTable`: sorter 비면 키 asc | `TableDelegate._applyDefaultSorting`: `$search` 없고 **sorter 가 비었을 때만** `defaultSortPropertyName` asc. PV sortConditions 가 있으면 sorter 가 안 비므로 추가 안 됨 |
+
+→ 차이의 핵심: V2 는 PV 정렬을 "개인화/variant 의 초기값" 경로로만 바인딩에 연결해서 끊기고, V4 는 PV 정렬을 테이블 `sortConditions`(상태) 로 직접 세팅해 바인딩 sorter 로 쓴다. "비었을 때만 기본 키 정렬" 로직은 둘 다 같다.
+
 ## 기타 배경
 - 백엔드는 정상: `$metadata` 의 `Common.ValueList` 에 `PresentationVariantQualifier` 가 나가고(`CL_SADL_GW_VOCAN_EXPOSURE`),
   `UI.PresentationVariant#SortDesc` 는 V2 별도 주석 파일(`/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='<바인딩>_VAN',Version='0001')/$value`)에 나간다.
