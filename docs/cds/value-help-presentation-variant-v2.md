@@ -2,6 +2,7 @@
 
 2026-11-20 실측. Z5U(Release 920), SAPUI5 1.154 (`sap.ui.comp`, ui5.sap.com).
 테스트 객체: 패키지 `ZCIH_VH_TEST` (`ABAP/ZCIH_VH_TEST/`), 바인딩 `ZUI_CIH_SOVHTEST_O2` (V2 UI).
+- 시스템의 테스트 CDS 마지막 상태: VH PV `#SortDesc`(Decimals desc) + 소비 쪽 `presentationVariantQualifier: 'SortDesc'` → V4 정상, **V2 바인딩 값 도움말은 깨진 상태**(A 경우).
 - VH: `ZI_CIH_CurrencyVH_Test` (I_Currency 래핑, `@UI.presentationVariant` qualifier `SortDesc`, Currency DESC)
 - 소비: `ZC_CIH_SOVHTest.CurrencyCode`
 
@@ -68,6 +69,17 @@ L3c 주의:
 
 → 정리: PV 정렬이 "초기 정렬값"으로는 계산되지만, 그 값을 바인딩에 쓰는 경로가 variant management 를 전제로 하고 있어 VHD 의 SmartTable 에서는 끊긴다.
    내부 SmartTable 이 없는 경로(`ValueHelpProvider._rebindTable` 이 직접 바인딩)는 원래 PV 를 보지 않고 키로만 정렬.
+
+## OData V4 비교 (Fiori Elements V4 List Report, UI5 1.154)
+같은 서비스 정의에 V4 UI 바인딩 `ZUI_CIH_SOVHTEST_O4` 추가. V4 는 값 도움말 메타데이터를 별도 문서(`srvd_f4/...`, `Common.ValueListReferences`)로 내보내고, 거기 `Common.ValueListMapping` 에 `PresentationVariantQualifier` 가 들어간다.
+
+| 경우 | 자동완성 | 다이얼로그 |
+|---|---|---|
+| (ii) PV qualifier 없음, 소비 쪽 qualifier 미지정 | `$orderby=Decimals desc` | `$orderby=Decimals desc` (BHD, IQD… 먼저) |
+| (i) PV `#SortDesc`, 소비 쪽 `presentationVariantQualifier: 'SortDesc'` | `$orderby=Decimals desc` | `$orderby=Decimals desc` |
+
+→ V4 는 어노테이션만으로 자동완성·다이얼로그 모두 정렬됨. (i) 은 V2 에서 값 도움말을 깨뜨리는 조합인데 V4 에서는 정상, PV 가 qualified 하나뿐이므로 qualifier 로 찾는 것도 확인.
+V4 Object Page 필드, 다른 UI5 버전은 미검증.
 
 ## 기타 배경
 - 백엔드는 정상: `$metadata` 의 `Common.ValueList` 에 `PresentationVariantQualifier` 가 나가고(`CL_SADL_GW_VOCAN_EXPOSURE`),

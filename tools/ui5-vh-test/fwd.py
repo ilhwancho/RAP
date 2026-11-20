@@ -7,7 +7,7 @@ PAGE = open(sys.argv[1], "rb").read()
 class H(BaseHTTPRequestHandler):
     def _go(self, method):
         lp = self.path.split("?")[0].lstrip("/")
-        if lp in ("index.html", "fe.html") or lp.startswith("feapp/"):
+        if lp in ("index.html", "fe.html", "fe4.html") or lp.startswith("feapp/") or lp.startswith("fe4app/"):
             base = os.path.dirname(os.path.abspath(__file__)); fp = os.path.join(base, lp)
             if lp == "feapp/manifest.json" and os.environ.get('MANIFEST'): fp = os.path.join(base, "variants", os.environ['MANIFEST'])
             if lp == "feapp/local.xml": fp = os.path.join(base, "variants", os.environ.get('LOCAL', 'local-none.xml'))

@@ -1,0 +1,14 @@
+{
+  "_version": "1.49.0",
+  "sap.app": { "id": "zvhtest4", "type": "application", "title": "VH test V4", "applicationVersion": { "version": "1.0.0" },
+    "dataSources": { "mainService": { "uri": "/sap/opu/odata4/sap/zui_cih_sovhtest_o4/srvd/sap/zui_cih_sovhtest_o4/0001/", "type": "OData", "settings": { "odataVersion": "4.0" } } } },
+  "sap.ui": { "technology": "UI5" },
+  "sap.ui5": {
+    "dependencies": { "libs": { "sap.fe.templates": {} } },
+    "models": { "": { "dataSource": "mainService", "preload": true, "settings": { "operationMode": "Server", "autoExpandSelect": true, "earlyRequests": true } } },
+    "routing": {
+      "routes": [ { "pattern": ":?query:", "name": "SOList", "target": "SOList" } ],
+      "targets": { "SOList": { "type": "Component", "id": "SOList", "name": "sap.fe.templates.ListReport",
+        "options": { "settings": { "contextPath": "/ZC_CIH_SOVHTest", "variantManagement": "None", "initialLoad": "Disabled" } } } } }
+  }
+}

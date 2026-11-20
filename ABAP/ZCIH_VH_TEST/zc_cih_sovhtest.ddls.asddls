@@ -12,6 +12,7 @@ define view entity ZC_CIH_SOVHTest
       SalesOrderID,
       @UI.lineItem: [{ position: 20 }]
       @UI.selectionField: [{ position: 20 }]
-      @Consumption.valueHelpDefinition: [{ entity: { name: 'ZI_CIH_CurrencyVH_Test', element: 'Currency' } }]
+      @Consumption.valueHelpDefinition: [{ entity: { name: 'ZI_CIH_CurrencyVH_Test', element: 'Currency' },
+                                           presentationVariantQualifier: 'SortDesc' }]
       CurrencyCode
 }
