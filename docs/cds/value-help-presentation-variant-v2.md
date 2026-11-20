@@ -15,6 +15,20 @@
 
 → V2 에서 PV 정렬을 쓰려면 **고정값 드롭다운 + qualifier 미지정** 조합만 된다. A·C 는 메타데이터 조작(qualifier 제거, `Common.ValueListWithFixedValues` 주입)으로 A/B 비교한 뒤, D 를 실제 CDS 로 다시 확인함.
 
+## 다이얼로그 추가 검증 (같은 날)
+일반 값 도움말(`sap:value-list="standard"`), 소비 쪽 qualifier 없음, PV 정렬 필드를 **키가 아닌 `Decimals` DESC** 로 바꿔 기본 정렬(`Currency asc`)과 구분되게 함.
+
+| PV | (a) SmartFilterBar 다이얼로그 | (b) SmartField 다이얼로그 | (c) Fiori Elements V2 List Report 필터바 다이얼로그 |
+|---|---|---|---|
+| V1. qualifier `SortDesc` | `$orderby=Currency asc` | `Currency asc` | `Currency asc` (`$batch`) |
+| V2. qualifier 없음 | `Currency asc` | `Currency asc` | `Currency asc` (`$batch`) |
+
+- UI5 버전별 (V2 PV 기준): 1.154.0, 1.144.1, 1.120.53 → (a)(b)(c) 모두 `Currency asc`. 1.108.57, 1.96.51 → (a)(b) `Currency asc`, (c)는 테스트용 FE 앱이 그 버전에서 안 떠서 미검증.
+- 대조: 같은 PV(qualifier 없음)로 고정값 드롭다운을 띄우면 `$orderby=Decimals desc` → PV 는 UI5 에 정상 전달되고, 다이얼로그만 안 씀.
+- (b) 는 읽기 전용 서비스라 `$metadata` 엔티티셋을 `sap:creatable/updatable="true"` 로 바꿔 서빙하고 `setEditable(true)` 로 편집 모드를 만든 상태에서 측정(쓰기 요청은 없음).
+- (c) 는 로컬에 만든 최소 FE V2 앱(`sap.suite.ui.generic.template.ListReport`, manifest 에 `_VAN` 주석 연결).
+- 판정은 요청 URL 의 `$orderby` 와 다이얼로그 첫 행(AED, AFN, ALL… = 통화 오름차순; PV 가 먹었다면 소수 3자리 통화가 먼저 나와야 함).
+
 ## 왜 그런가
 - 백엔드는 정상: `$metadata` 의 `Common.ValueList` 에 `PresentationVariantQualifier` 가 나가고(`CL_SADL_GW_VOCAN_EXPOSURE`),
   `UI.PresentationVariant#SortDesc` 는 V2 별도 주석 파일(`/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='<바인딩>_VAN',Version='0001')/$value`)에 나간다.
@@ -39,4 +53,4 @@ CurrencyCode,
 ## 테스트 방법 메모
 - 로컬 포워더(python, `adt_login` 세션)로 페이지와 `/sap/opu/*` 를 같은 origin 으로 서빙 → Playwright Chromium 에서 SmartFilterBar 실행, 나가는 OData 요청의 `$orderby` 로 판정.
 - 게시 직후 `$metadata` 403(UCON)이 수 분 지속됨.
-- 읽기 전용 서비스에서 `createEntry` 로 SmartField 를 편집 모드로 띄우는 건 실패(표시 모드) → SmartField 자동완성은 미검증, SmartFilterBar 로 판정.
+- SmartField 자동완성(typeahead)은 미검증. 다이얼로그는 위 (b) 방식으로 검증.
