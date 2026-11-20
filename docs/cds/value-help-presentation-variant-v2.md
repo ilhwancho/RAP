@@ -50,13 +50,32 @@ L3c 주의:
 ```
 - Object Page 의 SmartField 값 도움말에는 별도 확장(`onInitSmartFilterBarExtension` 이 아니라 Object Page 쪽 훅)이 필요 → 미검증.
 
-## 왜 그런가
+## 다이얼로그가 PV 를 읽고도 정렬 안 하는 이유 (UI5 1.154 소스 + 런타임 확인)
+1.154 다이얼로그 테이블은 `ValueHelpDialog._createDefaultSFBSmartTable` 이 만드는 **내부 SmartTable**(`…-valueHelpDialog-table`).
+`ValueHelpProvider._rebindTable` 은 이 테이블이 `isInternal` 이면 바로 return 하므로 정렬은 SmartTable 쪽에서 결정된다.
+
+1. SmartTable 의 `TableProvider` 는 PV 를 **읽는다**. qualifier 는 SmartTable custom data `presentationVariantQualifier` 에서 가져오는데 VHD 는 안 넣음 → **qualifier 없는 PV 만** 대상.
+   (ValueList 의 `PresentationVariantQualifier` 도 전달 안 됨 → qualified PV 는 다이얼로그에서 아예 안 읽힘)
+2. 읽은 PV 는 필드 메타 `sorted/sortOrder` → 컬럼 sortOrder → `_aInitialSorters` 까지 들어간다.
+   런타임: `_aInitialSorters = [{columnKey:"Decimals", operation:"Descending"}]`, Decimals 컬럼 `Descending`.
+3. 그런데 `SmartTable._reBindTable` 의 sorter 는 `_getTablePersonalisationData()` 에서만 나오고, 이 함수는 **`_oCurrentVariant` 가 없으면 `null` 반환**.
+   `_oCurrentVariant` 는 variant management 초기화(`_variantInitialised` → `"STANDARD"`)나 개인화 이벤트에서만 세팅되는데,
+   VHD 는 SmartTable 을 `showVariantManagement: false, showTablePersonalisation: false` 로 만든다 → 계속 `undefined` → `_aInitialSorters` 가 안 쓰임.
+   런타임: `beforeRebindTable` 시점 `bindingParams.sorter = []`, `_oCurrentVariant = undefined`, `personalisationData = null`.
+4. VHD 의 `beforeRebindTable` 핸들러는 **sorter 가 비어 있고 basic search 값이 없으면** 키 sorter(`new Sorter(oConfig.key)`) 를 추가 → `$orderby=Currency asc`.
+5. 인과 확인: 다이얼로그 연 뒤 `_oCurrentVariant = "STANDARD"` 만 넣고 `rebindTable()` → sorter `Decimals desc`, 행 BHD, IQD, JOD…, Go 후에도 유지.
+   (private 필드 조작이라 해결책으로 쓰진 말 것. 원인 확인용.)
+
+→ 정리: PV 정렬이 "초기 정렬값"으로는 계산되지만, 그 값을 바인딩에 쓰는 경로가 variant management 를 전제로 하고 있어 VHD 의 SmartTable 에서는 끊긴다.
+   내부 SmartTable 이 없는 경로(`ValueHelpProvider._rebindTable` 이 직접 바인딩)는 원래 PV 를 보지 않고 키로만 정렬.
+
+## 기타 배경
 - 백엔드는 정상: `$metadata` 의 `Common.ValueList` 에 `PresentationVariantQualifier` 가 나가고(`CL_SADL_GW_VOCAN_EXPOSURE`),
   `UI.PresentationVariant#SortDesc` 는 V2 별도 주석 파일(`/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='<바인딩>_VAN',Version='0001')/$value`)에 나간다.
 - UI5 `MetadataAnalyser` 는 qualifier 가 없는(primary) ValueList 라도 `PresentationVariantQualifier` 가 있으면 `primaryValueListAnnotationWithPVQualifier` 로 따로 분류한다(소스 주석: "TODO … Ignore ValueList with PresentationVariantQualifier").
   `ODataControlFactory`·`ValueListProvider` 는 `primaryValueListAnnotation` 만 보므로 VH 가 없는 것처럼 동작해 깨진다.
 - PV 정렬은 `ValueListProvider._handlePresentationVariantSortOrderAnnotation` 이 VH 엔티티 타입의 `UI.PresentationVariant#<q>` 를 직접 찾아서 쓴다(ValueList 의 qualifier 는 안 씀). 드롭다운 템플릿에서만 sorter 를 쓰고, sortOrder 첫 항목만 쓴다.
-- 다이얼로그(`ValueHelpProvider`)는 항상 `new Sorter(this.sKey)` (키 오름차순).
+- 다이얼로그는 위 절 참고 (내부 SmartTable 경로에서 PV 초기 정렬이 끊기고 키 오름차순만 남음).
 
 ## V2 에서 쓰는 형태
 ```cds
