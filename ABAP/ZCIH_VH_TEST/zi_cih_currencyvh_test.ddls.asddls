@@ -2,6 +2,7 @@
 @EndUserText.label: 'Currency VH (PV sort test)'
 @ObjectModel.dataCategory: #VALUE_HELP
 @Search.searchable: true
+@ObjectModel.resultSet.sizeCategory: #XS
 @UI.presentationVariant: [{ qualifier: 'SortDesc',
                             sortOrder: [{ by: 'Currency', direction: #DESC }],
                             visualizations: [{ type: #AS_LINEITEM }] }]
