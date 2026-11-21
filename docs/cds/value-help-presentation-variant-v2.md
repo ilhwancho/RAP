@@ -44,7 +44,7 @@ L3c 주의:
 - 다이얼로그를 처음 열 때 기본 검색(`Currency asc`)이 먼저 한 번 나가고, 확장이 `rebindTable()` 로 다시 조회 → 요청 2회.
 - private 구조(다이얼로그 안의 SmartTable, `valueHelpRequest` 후 열린 VHD 를 registry 에서 찾기)에 기대므로 UI5 버전 바뀌면 깨질 수 있음. 1.154 에서만 실측.
   내부 SmartTable 이 없는 버전용으로 `bindRows` 오버라이드 fallback 을 넣었지만 그 경로는 미검증.
-- 코드: `tools/ui5-vh-test/feapp/ext/ListReportExt.controller.js`, manifest 등록:
+- 재사용 코드·적용법: **`ui5/v2-valuehelp-sort/`** (필드별 설정형 헬퍼, 1.154·1.148.12 검증). 테스트 앱 사본: `tools/ui5-vh-test/feapp/ext/`. manifest 등록:
 ```json
 "sap.ui5": { "extends": { "extensions": { "sap.ui.controllerExtensions": {
   "sap.suite.ui.generic.template.ListReport.view.ListReport": { "controllerName": "zvhtest.ext.ListReportExt" } } } } }
