@@ -10,8 +10,12 @@ define view entity ZI_BomItemCompare
       and s.Product     = k.Product
       and s.Plant       = k.Plant
       and s.MatchKey    = k.MatchKey
-    left outer to one join ZI_ErpBomItem as e
-      on  e.Material    = k.Product
+    left outer to one join ZI_ErpBomItemByHdr as e
+      on  e.IfKey       = k.IfKey
+      and e.BomName     = k.BomName
+      and e.HeaderSeqNo = k.HeaderSeqNo
+      and e.CustId      = k.CustId
+      and e.Product     = k.Product
       and e.Plant       = k.Plant
       and e.MatchKey    = k.MatchKey
 {
