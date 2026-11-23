@@ -42,19 +42,18 @@ define view entity ZI_BomHdrCompare
       c.MatchCount,
       c.SbomOnlyCount,
       c.ErpOnlyCount,
+      c.ComponentDiffCount,
       c.QtyDiffCount,
 
       case
         when e.Material is null                       then 'ERP_BOM_MISSING'
-        when c.SbomOnlyCount + c.ErpOnlyCount
-           + c.QtyDiffCount > 0                       then 'ITEM_DIFF'
+        when c.ItemCount - c.MatchCount > 0                       then 'ITEM_DIFF'
         else 'MATCH'
       end as HeaderStatus,
 
       case
         when e.Material is null                       then 1
-        when c.SbomOnlyCount + c.ErpOnlyCount
-           + c.QtyDiffCount > 0                       then 2
+        when c.ItemCount - c.MatchCount > 0                       then 2
         else 3
       end as HeaderCriticality,
 
