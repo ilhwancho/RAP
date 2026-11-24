@@ -1,0 +1,64 @@
+{
+ "_version": "1.49.0",
+ "sap.app": {
+  "id": "zlrtest",
+  "type": "application",
+  "title": "t",
+  "applicationVersion": {
+   "version": "1.0.0"
+  },
+  "dataSources": {
+   "mainService": {
+    "uri": "/sap/opu/odata4/sap/zui_cih_salesorder_o4/srvd/sap/zui_cih_salesorder/0001/",
+    "type": "OData",
+    "settings": {
+     "odataVersion": "4.0"
+    }
+   }
+  }
+ },
+ "sap.ui": {
+  "technology": "UI5"
+ },
+ "sap.ui5": {
+  "dependencies": {
+   "libs": {
+    "sap.fe.templates": {}
+   }
+  },
+  "models": {
+   "": {
+    "dataSource": "mainService",
+    "preload": true,
+    "settings": {
+     "operationMode": "Server",
+     "autoExpandSelect": true,
+     "earlyRequests": true
+    }
+   }
+  },
+  "routing": {
+   "routes": [
+    {
+     "pattern": ":?query:",
+     "name": "L",
+     "target": "L"
+    }
+   ],
+   "targets": {
+    "L": {
+     "type": "Component",
+     "id": "L",
+     "name": "sap.fe.templates.ListReport",
+     "options": {
+      "settings": {
+       "contextPath": "/SalesOrder",
+       "variantManagement": "None",
+       "initialLoad": "Enabled"
+      }
+     }
+    }
+   }
+  }
+ }
+}

@@ -18,6 +18,7 @@ ABAP RAP 학습/개발용 레포. SAP S/4HANA Cloud 시스템 `Z5U` (`https://my
 - CDS 문법/동작 정리 노트: `docs/cds/` (예: `reuse-expressions.md` — `$projection` 식 재사용, association ON 제약,
   `value-help-presentation-variant-v2.md` — 값 도움말 정렬 V2/V4 차이·UI5 소스 원인)
 - V2 값 도움말 다이얼로그 정렬 확장: `ui5/v2-valuehelp-sort/`, UI5 실측 하네스: `tools/ui5-vh-test/`
+- Fiori Elements V4 Delete 버튼 숨기기(manifest `StandardAction::Delete` 는 UI5 1.151+, 로컬 주석·파라미터 CDS 주의): `docs/fe/hide-delete-button-v4.md`, 하네스 `tools/ui5-fe-delete-test/`
 - 세션별 작업 요약: `docs/session-notes/`
 - 객체 생성/수정/활성화 흐름(lock → PUT source → unlock → activate)은 `docs/adt-object-deploy.md` 참조.
 
