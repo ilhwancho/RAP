@@ -13,5 +13,27 @@ define view entity ZC_CIH_SOVHTest
       @UI.lineItem: [{ position: 20 }]
       @UI.selectionField: [{ position: 20 }]
       @Consumption.valueHelpDefinition: [{ entity: { name: 'ZI_CIH_CurrencyVH_Test', element: 'Currency' } }]
-      CurrencyCode
+      CurrencyCode,
+      // parameterized VH tests
+      @UI.selectionField: [{ position: 30 }]
+      @EndUserText.label: 'Curr (param=const 3)'
+      @Consumption.valueHelpDefinition: [{ entity: { name: 'ZI_CIH_CurrVHParam', element: 'Currency' },
+                                           additionalBinding: [{ parameter: 'P_MinDecimals', localConstant: '3' }] }]
+      CurrencyCode                as CurrConst,
+      @UI.selectionField: [{ position: 40 }]
+      @EndUserText.label: 'Min decimals'
+      cast( 0 as int1 )    as MinDecimals,
+      @UI.selectionField: [{ position: 50 }]
+      @EndUserText.label: 'Curr (param=local element)'
+      @Consumption.valueHelpDefinition: [{ entity: { name: 'ZI_CIH_CurrVHParam', element: 'Currency' },
+                                           additionalBinding: [{ parameter: 'P_MinDecimals', localElement: 'MinDecimals' }] }]
+      CurrencyCode                as CurrElem,
+      @UI.selectionField: [{ position: 60 }]
+      @EndUserText.label: 'Curr (param=system field)'
+      @Consumption.valueHelpDefinition: [{ entity: { name: 'ZI_CIH_CurrVHSys', element: 'Currency' } }]
+      CurrencyCode                as CurrSys,
+      @UI.selectionField: [{ position: 70 }]
+      @EndUserText.label: 'Curr (param unbound)'
+      @Consumption.valueHelpDefinition: [{ entity: { name: 'ZI_CIH_CurrVHParam', element: 'Currency' } }]
+      CurrencyCode                as CurrNone
 }

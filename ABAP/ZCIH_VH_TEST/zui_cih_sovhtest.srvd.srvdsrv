@@ -2,4 +2,6 @@
 define service ZUI_CIH_SOVHTEST {
   expose ZC_CIH_SOVHTest;
   expose ZI_CIH_CurrencyVH_Test;
+  expose ZI_CIH_CurrVHParam;
+  expose ZI_CIH_CurrVHSys;
 }
