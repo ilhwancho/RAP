@@ -25,6 +25,10 @@ Export 버튼으로 받은 파일을 열어 확인. Export 는 **포매터를 �
 | 위 + `exportSettings: { property: "ProductId" }` (대소문자 틀림) | `<TG11>` | **빈 셀** |
 | 위 + `exportSettings: { type: "Number" }` (문자열 필드) | `<TG11>` | **잘못된 숫자 셀** (`<v>TG11</v>`, 파일 복구 경고/빈 값) |
 
+타입 정보가 붙은 필드를 숨긴 DataField 로 두고 커스텀 열(포매터 바인딩)로 표시한 경우 (`expop_typed.json`, 1.148.9) — 모두 값 나옴:
+- `NetAmount`(ISOCurrency) `6000`, `UnitPrice`(LineItem 에 없음) `3000` — 통화 필드 `CurrencyCode` 가 `$select` 에 없어 숫자 서식 통화가 `EUR` 로 표시됨 (⚠️ 기본값 추정)
+- `Quantity`(Unit) `2`, `LocalCreatedAt`(DateTimeOffset, 속성도 UI.Hidden) 문자열 `2026-11-09T13:55:15.980585Z`, `ProductID`(Common.Text → 내비 경로) `TG11`
+
 → `$select` 에 필드가 있는데도 엑셀이 비면: `exportSettings.property` 가 `properties` 를 덮어쓰므로 이름(대소문자·경로)이 정확한지,
 `exportSettings.type` 이 실제 타입과 맞는지 확인. 화면은 포매터 덕에 정상으로 보여 차이를 알아채기 어렵다.
 

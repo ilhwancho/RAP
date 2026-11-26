@@ -1,0 +1,1 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m"><Text core:require="{F: 'zlrtest/ext/fmt'}" text="{path: 'Quantity', formatter: 'F.up'}"/></core:FragmentDefinition>
