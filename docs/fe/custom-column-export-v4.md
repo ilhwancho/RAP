@@ -55,3 +55,15 @@ Export 버튼으로 받은 파일을 열어 확인. Export 는 **포매터를 �
   - `getCustomExportSettings` → `property`/`template`. annotation 열·property 열의 `exportSettings` 생성(`createColumnExportSettings`)에 Hidden 조건 없음.
 - `sap/ui/mdc/table/PropertyHelper.getColumnExportSettings` → `property: getSimpleProperties().map(p => p.path)`.
 - `sap/ui/mdc/Table._onExport` → `dataSource: this.getRowBinding()` (데이터는 row binding 의 요청 파라미터, 즉 `$select` 를 따름).
+
+## Excel 열 제목(label) 결정 (1.148.9, `expop_hdr.json`, `expop_keyclash.json`)
+| manifest 커스텀 열 | 화면 헤더 | Excel 제목 |
+|---|---|---|
+| `header` 없음, `properties: [Quantity]` | (빈 헤더) | `Quantity` ← **properties 첫 속성의 라벨**(없으면 속성명) |
+| `header: "{i18n>DateCheckLabel}"` | i18n 텍스트 | i18n 텍스트 |
+| `header: "{i18n>NoSuchKey}"` (키 없음) | `NoSuchKey` | `NoSuchKey` |
+| `header: "Date Check"` | `Date Check` | `Date Check` |
+| 열 키가 숨긴 DataField 속성명과 같음 (`"CurrencyCode"`) | header | header, 값도 정상 (충돌 영향 없음) |
+
+- Excel 제목이 화면 헤더와 다르면 그 Excel 열은 그 커스텀 열에서 온 게 아닐 가능성(다른 열/override)이나 header 미지정 + 속성 라벨 fallback.
+- Export 데이터 요청은 `sap.ui.export` Web Worker 가 보냄 → 브라우저 Network 탭에서 응답 본문이 안 보일 수 있음. URL 을 복사해 같은 세션 새 탭에서 열면 응답 확인 가능.
