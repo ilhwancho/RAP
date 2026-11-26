@@ -9,3 +9,10 @@
 - `run.js` : Delete 버튼 ID·visible 과 툴바 버튼 텍스트 출력, 스크린샷 저장.
 
 실행 예: `UI5V=1.148.0 tools/ui5-fe-delete-test/go.sh hide.json`
+
+## 커스텀 열 Excel Export 측정 (2026-11-26)
+결과 정리 `docs/fe/custom-column-export-v4.md`.
+- `app/exp.json` + `exp_anno.xml` : LR 커스텀 열 (`properties` 가 UI.Hidden 속성 / 숨긴 DataField / 바인딩 없음). `run_export_lr.js`
+- `app/expop.json` + `expop_anno.xml` : OP 아이템 테이블(`_Item`) 커스텀 열. `expop_pv.json`(PresentationVariant RequestAtLeast), `expop_fix.json`(프래그먼트에 숨김 바인딩). `run_export_op.js`
+- 실행 예: `pkill -f "python fwd.py"; (cd tools/ui5-fe-delete-test; MAN=expop.json UI5V=1.148.12 python fwd.py &) ; NODE_PATH=$(npm root -g) node tools/ui5-fe-delete-test/run_export_op.js`
+- 출력: Export 열 설정(`property`), 테이블 row binding `getDownloadUrl()` 의 `$select`, 그 URL 로 받은 첫 행.

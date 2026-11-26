@@ -1,0 +1,130 @@
+{
+ "_version": "1.49.0",
+ "sap.app": {
+  "id": "zlrtest",
+  "type": "application",
+  "title": "t",
+  "applicationVersion": {
+   "version": "1.0.0"
+  },
+  "dataSources": {
+   "mainService": {
+    "uri": "/sap/opu/odata4/sap/zui_cih_salesorder_o4/srvd/sap/zui_cih_salesorder/0001/",
+    "type": "OData",
+    "settings": {
+     "odataVersion": "4.0",
+     "annotations": [
+      "annotation"
+     ]
+    }
+   },
+   "annotation": {
+    "type": "ODataAnnotation",
+    "uri": "exp_anno.xml",
+    "settings": {
+     "localUri": "exp_anno.xml"
+    }
+   }
+  }
+ },
+ "sap.ui": {
+  "technology": "UI5"
+ },
+ "sap.ui5": {
+  "dependencies": {
+   "libs": {
+    "sap.fe.templates": {}
+   }
+  },
+  "models": {
+   "": {
+    "dataSource": "mainService",
+    "preload": true,
+    "settings": {
+     "operationMode": "Server",
+     "autoExpandSelect": true,
+     "earlyRequests": true
+    }
+   }
+  },
+  "routing": {
+   "routes": [
+    {
+     "pattern": ":?query:",
+     "name": "L",
+     "target": "L"
+    }
+   ],
+   "targets": {
+    "L": {
+     "type": "Component",
+     "id": "L",
+     "name": "sap.fe.templates.ListReport",
+     "options": {
+      "settings": {
+       "contextPath": "/SalesOrder",
+       "variantManagement": "None",
+       "initialLoad": "Enabled",
+       "controlConfiguration": {
+        "@com.sap.vocabularies.UI.v1.LineItem": {
+         "columns": {
+          "C_UUID": {
+           "header": "UUID bound (prop UI.Hidden)",
+           "template": "zlrtest.ext.ColUUID",
+           "properties": [
+            "SalesOrderUUID"
+           ],
+           "position": {
+            "placement": "End"
+           }
+          },
+          "C_CURR": {
+           "header": "Curr bound (DataField UI.Hidden)",
+           "template": "zlrtest.ext.ColCurr",
+           "properties": [
+            "CurrencyCode"
+           ],
+           "position": {
+            "placement": "End"
+           }
+          },
+          "C_DESC": {
+           "header": "Desc bound (control)",
+           "template": "zlrtest.ext.ColDesc",
+           "properties": [
+            "Description"
+           ],
+           "position": {
+            "placement": "End"
+           }
+          },
+          "C_UUID_NB": {
+           "header": "UUID not bound",
+           "template": "zlrtest.ext.ColStatic",
+           "properties": [
+            "SalesOrderUUID"
+           ],
+           "position": {
+            "placement": "End"
+           }
+          },
+          "C_CUST_NB": {
+           "header": "Customer not bound",
+           "template": "zlrtest.ext.ColStatic",
+           "properties": [
+            "CustomerID"
+           ],
+           "position": {
+            "placement": "End"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}
