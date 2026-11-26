@@ -1,0 +1,1 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m"><ObjectStatus text="{= ${Quantity} > 1 ? 'Many' : 'Few' }" state="{= ${Quantity} > 1 ? 'Error' : 'Success' }"/></core:FragmentDefinition>

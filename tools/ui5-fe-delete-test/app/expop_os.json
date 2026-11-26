@@ -1,0 +1,132 @@
+{
+ "_version": "1.49.0",
+ "sap.app": {
+  "id": "zlrtest",
+  "type": "application",
+  "title": "t",
+  "applicationVersion": {
+   "version": "1.0.0"
+  },
+  "dataSources": {
+   "mainService": {
+    "uri": "/sap/opu/odata4/sap/zui_cih_salesorder_o4/srvd/sap/zui_cih_salesorder/0001/",
+    "type": "OData",
+    "settings": {
+     "odataVersion": "4.0",
+     "annotations": [
+      "annotation"
+     ]
+    }
+   },
+   "annotation": {
+    "type": "ODataAnnotation",
+    "uri": "expop_typed.xml",
+    "settings": {
+     "localUri": "expop_typed.xml"
+    }
+   }
+  }
+ },
+ "sap.ui": {
+  "technology": "UI5"
+ },
+ "sap.ui5": {
+  "dependencies": {
+   "libs": {
+    "sap.fe.templates": {}
+   }
+  },
+  "models": {
+   "": {
+    "dataSource": "mainService",
+    "preload": true,
+    "settings": {
+     "operationMode": "Server",
+     "autoExpandSelect": true,
+     "earlyRequests": true
+    }
+   }
+  },
+  "routing": {
+   "routes": [
+    {
+     "pattern": ":?query:",
+     "name": "L",
+     "target": "L"
+    },
+    {
+     "pattern": "SalesOrder({key}):?query:",
+     "name": "O",
+     "target": "O"
+    }
+   ],
+   "targets": {
+    "L": {
+     "type": "Component",
+     "id": "L",
+     "name": "sap.fe.templates.ListReport",
+     "options": {
+      "settings": {
+       "contextPath": "/SalesOrder",
+       "variantManagement": "None",
+       "initialLoad": "Enabled",
+       "navigation": {
+        "SalesOrder": {
+         "detail": {
+          "route": "O"
+         }
+        }
+       }
+      }
+     }
+    },
+    "O": {
+     "type": "Component",
+     "id": "O",
+     "name": "sap.fe.templates.ObjectPage",
+     "options": {
+      "settings": {
+       "contextPath": "/SalesOrder",
+       "controlConfiguration": {
+        "_Item/@com.sap.vocabularies.UI.v1.LineItem": {
+         "columns": {
+          "C_OS_QTY": {
+           "header": "OS expr Quantity (decimal)",
+           "template": "zlrtest.ext.OS_C_OS_QTY",
+           "properties": [
+            "Quantity"
+           ],
+           "position": {
+            "placement": "End"
+           }
+          },
+          "C_OS_NO": {
+           "header": "OS expr ItemNo (string)",
+           "template": "zlrtest.ext.OS_C_OS_NO",
+           "properties": [
+            "ItemNo"
+           ],
+           "position": {
+            "placement": "End"
+           }
+          },
+          "C_OS_NET": {
+           "header": "OS expr NetAmount (hidden DF)",
+           "template": "zlrtest.ext.OS_C_OS_NET",
+           "properties": [
+            "NetAmount"
+           ],
+           "position": {
+            "placement": "End"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}
