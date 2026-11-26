@@ -13,6 +13,21 @@
   ```
   둘 다 `$select` 에 들어가고 값이 옴 (1.148 실측).
 
+## 실제 xlsx 확인 (포매터 사용, 1.148.9, `run_export_dl.js`)
+Export 버튼으로 받은 파일을 열어 확인. Export 는 **포매터를 쓰지 않고 원본 값**을 쓴다 (화면 `<TG11>` → 엑셀 `TG11`).
+
+| 커스텀 열 | 화면 | xlsx |
+|---|---|---|
+| `properties: [ProductID]`, `{path:'ProductID', formatter}` | `<TG11>` | `TG11` |
+| `properties: [CurrencyCode]` (DataField UI.Hidden) + 포매터 | `<KRW>` | `KRW` |
+| `properties: [Quantity, QuantityUnit]` + parts 포매터 | `2.000 EA` | `2\nEA` (여러 속성은 줄바꿈 wrap) |
+| `properties: [_SalesOrder/CustomerID]` (내비 경로) + 포매터 | `<ZCIHNOLIM>` | `ZCIHNOLIM` |
+| 위 + `exportSettings: { property: "ProductId" }` (대소문자 틀림) | `<TG11>` | **빈 셀** |
+| 위 + `exportSettings: { type: "Number" }` (문자열 필드) | `<TG11>` | **잘못된 숫자 셀** (`<v>TG11</v>`, 파일 복구 경고/빈 값) |
+
+→ `$select` 에 필드가 있는데도 엑셀이 비면: `exportSettings.property` 가 `properties` 를 덮어쓰므로 이름(대소문자·경로)이 정확한지,
+`exportSettings.type` 이 실제 타입과 맞는지 확인. 화면은 포매터 덕에 정상으로 보여 차이를 알아채기 어렵다.
+
 ## 실측 (서비스 `ZUI_CIH_SALESORDER_O4`, 하네스 `tools/ui5-fe-delete-test/`)
 로컬 주석으로 LineItem 을 `ItemNo` + `CurrencyCode`(DataField `UI.Hidden`) 로 바꾸고 커스텀 열 추가.
 

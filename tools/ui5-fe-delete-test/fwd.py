@@ -18,8 +18,10 @@ class H(BaseHTTPRequestHandler):
         self.send_response(r.status_code)
         for k, v in r.headers.items():
             if k.lower() not in ("content-encoding","transfer-encoding","content-length","set-cookie","connection"): self.send_header(k, v)
-        c = r.content; self.send_header("Content-Length", str(len(c))); self.end_headers(); self.wfile.write(c)
+        c = r.content; self.send_header("Content-Length", str(len(c))); self.end_headers()
+        if m != "HEAD": self.wfile.write(c)
     def do_GET(self): self._go("GET")
     def do_POST(self): self._go("POST")
+    def do_HEAD(self): self._go("HEAD")
     def log_message(self, *a): pass
 ThreadingHTTPServer(("127.0.0.1", 8766), H).serve_forever()

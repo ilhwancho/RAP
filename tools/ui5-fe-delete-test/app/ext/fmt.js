@@ -1,0 +1,1 @@
+sap.ui.define([], () => ({ up: v => v ? "<" + String(v).toUpperCase() + ">" : "", two: (a, b) => a + " " + b }));
